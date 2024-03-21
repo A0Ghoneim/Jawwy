@@ -18,9 +18,10 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository) : View
         language: String = "en"
     ){
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getWeather(lat, long).collectLatest { data ->
+            repository.getWeather(lat, long,units,language).collectLatest { data ->
                 if (data.isSuccessful){
                     Log.i(TAG, "getWeather: "+data.body()?.current?.dt)
+                    Log.i(TAG, "getWeather: "+data.body()?.current?.temp)
                 }else{
                     Log.i(TAG, "getWeather: Failed")
                 }

@@ -29,6 +29,49 @@
             android:textColor="@color/navy" />
     </androidx.cardview.widget.CardView>
 
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView6"
+        android:layout_width="200dp"
+        android:layout_height="90dp"
+        app:cardBackgroundColor="@color/calm_yellow"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView3">
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/tunit"
+            android:textColor="@color/navy" />
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView7"
+        android:layout_width="200dp"
+        android:layout_height="90dp"
+        app:cardBackgroundColor="@color/calm_yellow"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardView6"
+        app:layout_constraintTop_toBottomOf="@+id/cardView3">
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/wunit"
+            android:textColor="@color/navy" />
+    </androidx.cardview.widget.CardView>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
         android:layout_width="200dp"
@@ -46,12 +89,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/unit"
+            android:text="@string/language"
             android:textColor="@color/navy" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
+        android:id="@+id/cardView8"
         android:layout_width="200dp"
         android:layout_height="150dp"
         android:layout_marginTop="-16dp"
@@ -63,17 +106,20 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <RadioGroup
+            android:id="@+id/location_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp">
 
             <RadioButton
+                android:id="@+id/auto_rbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/auto"
                 android:textColor="@color/white" />
 
             <RadioButton
+                android:id="@+id/manual_rbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/manual"
@@ -87,39 +133,117 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView3"
         android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="-16dp"
         app:cardBackgroundColor="@color/navy"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintStart_toStartOf="@+id/cardView2"
-        app:layout_constraintTop_toTopOf="@+id/cardView3">
+        app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
         <RadioGroup
+            android:id="@+id/language_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp">
 
             <RadioButton
+                android:id="@+id/english_rbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/celecius"
+                android:text="@string/english"
                 android:textColor="@color/white" />
 
             <RadioButton
+                android:id="@+id/arabic_rbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ferenhaite"
+                android:text="@string/arabic"
                 android:textColor="@color/white" />
+
+
+        </RadioGroup>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="-16dp"
+        app:cardBackgroundColor="@color/navy"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView6">
+
+        <RadioGroup
+            android:id="@+id/temperature_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
             <RadioButton
+                android:id="@+id/celsius_rbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/celsius"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/fahrenheit_rbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fahrenheit"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/kelvin_rbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/kelvin"
                 android:textColor="@color/white" />
 
 
+        </RadioGroup>
 
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="-16dp"
+        app:cardBackgroundColor="@color/navy"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintStart_toStartOf="@+id/cardView7"
+        app:layout_constraintTop_toBottomOf="@+id/cardView7">
+
+        <RadioGroup
+            android:id="@+id/wind_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <RadioButton
+                android:id="@+id/metric_rbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/meter_second"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/mile_rbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mile_hour"
+                android:textColor="@color/white" />
         </RadioGroup>
 
 

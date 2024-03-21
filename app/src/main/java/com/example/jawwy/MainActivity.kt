@@ -36,6 +36,8 @@ import com.google.android.gms.location.Priority
 private const val My_LOCATION_PERMISSION_ID = 5005
 
 class MainActivity : AppCompatActivity() {
+    lateinit var act :MainActivity
+    lateinit var viewModel: CurrentWeatherViewModel
     lateinit var binding: ActivityMainBinding
      var isFirstTime =true
     private lateinit var locationCallback: LocationCallback
@@ -46,38 +48,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val act = this
-        val viewModel =  CurrentWeatherViewModel(WeatherRepository(WeatherRemoteDataSource()))
-         sharedPref = act.getSharedPreferences("mypref",Context.MODE_PRIVATE)
-       // val sharedPref = act?.getSharedPreferences("getString(R.string.preference_file_key)", Context.MODE_PRIVATE)
-        val key = sharedPref.getString("key","no")
-        if (key=="yes"){
-            isFirstTime =false
-
-
-               var currlat = getDouble(sharedPref,"lat",0.0)
-            var currlong = getDouble(sharedPref,"long",0.0)
-                viewModel.getWeather(currlat,currlong)
-
-            // we should local this api call to room here
-
-
-        }else{
-           val editor = sharedPref.edit()
-            editor.putString("key","yes")
-            editor.commit()
-            isFirstTime = true
-        }
-
-        Log.i("TAG", "onCreate: ")
-        val thelat = intent.getDoubleExtra("lat",0.0)
-        val thelong = intent.getDoubleExtra("long",0.0)
-
-        Log.i("TAG", "onCreate: $thelat   $thelong")
-
-        if (thelat>0.0&&thelong>0.0){
-            viewModel.getWeather(thelat,thelong)
-        }
+        act=this
+        viewModel =  CurrentWeatherViewModel(WeatherRepository(WeatherRemoteDataSource()))
+        sharedPref = act.getSharedPreferences("mypref",Context.MODE_PRIVATE)
 
 
         Log.i("TAG", "onCreate: isfirst $isFirstTime")
@@ -93,6 +66,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        // val sharedPref = act?.getSharedPreferences("getString(R.string.preference_file_key)", Context.MODE_PRIVATE)
+        val key = sharedPref.getString("key","no")
+
+        if (key=="yes"){
+            isFirstTime =false
+            var currlat = getDouble(sharedPref,"lat",0.0)
+            var currlong = getDouble(sharedPref,"long",0.0)
+            var currunit = sharedPref.getString("temperature","standard")
+            Log.i("temperature", "onStart: "+currunit)
+            var currlang = sharedPref.getString("language","en")
+            Log.i("temperature", "onStart: "+currlang)
+            viewModel.getWeather(currlat,currlong,currunit!!,currlang!!)
+
+            // we should local this api call to room here
+        }else{
+            val editor = sharedPref.edit()
+            editor.putString("key","yes")
+            editor.commit()
+            isFirstTime = true
+        }
         if (isFirstTime){
             if (checkPermissions()){
                 if (isLocationEnabled(this)){
@@ -162,6 +155,9 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(baseContext, "lat $lat", Toast.LENGTH_SHORT).show()
                     putDouble(sharedPref.edit(),"lat",lat)
                     putDouble(sharedPref.edit(),"long",long)
+                    ////////
+                    viewModel.getWeather(lat,long)
+                    ///////
                     mFusedLocationClient.removeLocationUpdates(locationCallback)
                 }
 

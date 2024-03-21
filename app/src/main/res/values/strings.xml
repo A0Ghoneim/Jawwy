@@ -6,6 +6,13 @@
     <string name="auto">Auto</string>
     <string name="manual">Manual</string>
     <string name="kelvin">Kelvin</string>
-    <string name="celecius">Celecius</string>
-    <string name="ferenhaite">Ferenhaite</string>
+    <string name="celsius">Celsius</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="tunit">T Unit</string>
+    <string name="wunit">W Unit</string>
+    <string name="meter_second">Meter/Second</string>
+    <string name="mile_hour">Mile/Hour</string>
 </resources>
