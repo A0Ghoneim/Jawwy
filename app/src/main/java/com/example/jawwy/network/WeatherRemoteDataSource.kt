@@ -23,6 +23,6 @@ class WeatherRemoteDataSource: IWeatherRemoteDataSource {
     }
 
     override fun makeSearchCall(place: String,limit : Int): Flow<Response<SearchPojo>> = flow {
-        emit(searchRetrofitService.searchLocation(place,limit))
+        emit(searchRetrofitService.searchLocation(place,limit,"en"))
     }
 }

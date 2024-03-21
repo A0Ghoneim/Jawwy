@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Jawwy</string>
     <string name="title_activity_trial">trialActivity</string>
+    <string name="location">Location</string>
+    <string name="unit">Unit</string>
+    <string name="auto">Auto</string>
+    <string name="manual">Manual</string>
+    <string name="kelvin">Kelvin</string>
+    <string name="celecius">Celecius</string>
+    <string name="ferenhaite">Ferenhaite</string>
 </resources>

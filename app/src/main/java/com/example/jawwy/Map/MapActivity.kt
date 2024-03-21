@@ -1,7 +1,11 @@
 package com.example.jawwy.Map
 
+import android.annotation.SuppressLint
 import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.database.Cursor
 import android.database.MatrixCursor
 import android.graphics.Rect
 import android.location.Address
@@ -13,6 +17,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.SearchView.OnQueryTextListener
+import android.widget.SearchView.OnSuggestionListener
 import android.widget.SimpleCursorAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +34,6 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import org.osmdroid.api.IMapController
 import org.osmdroid.config.Configuration
 import org.osmdroid.config.Configuration.*
@@ -59,6 +63,7 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
     lateinit var marker: Marker
     lateinit var geocoder:Geocoder
     lateinit var act:MapActivity
+    lateinit var searchList : ArrayList<Features>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMapBinding.inflate(layoutInflater)
@@ -66,7 +71,48 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
 
         val viewModel = SearchViewModel(WeatherRepository(WeatherRemoteDataSource()))
 
+        lifecycleScope.launch {
+            viewModel.featureList.collectLatest { result ->
+                when (result) {
+                    is ApiState.Success -> {
+                        val cursor = MatrixCursor(sAutocompleteColNames)
 
+                        Log.i("TAG", "onQueryTextChange: "+result.data.size)
+                        // get your search terms from the server here, ex:
+
+                        // get your search terms from the server here, ex:
+                        var terms = mutableListOf<Features>()
+                        terms = result.data as MutableList<Features>
+
+                        searchList=terms as ArrayList<Features>
+
+                        for (i in  0 .. 4){
+                            Log.d("TAG", "onCreateeeeee: $i  ${searchList[i]?.properties?.name}")
+                        }
+
+                        // parse your search terms into the MatrixCursor
+
+                        // parse your search terms into the MatrixCursor
+                        for (index in 0 until result.data.size) {
+                            //if (terms.get(index).properties?.city!=null) {
+                            Log.i("TAG", "onQueryTextChange"+terms.get(index).properties?.name)
+                            val term = terms.get(index).properties?.name + " , " + terms.get(index).properties?.country
+                            val row = arrayOf<Any>(index, term!!)
+                            cursor.addRow(row)
+                            // }
+                        }
+
+                        binding.searchView.getSuggestionsAdapter().changeCursor(cursor);
+                    }
+
+                    is ApiState.Failure -> {
+                    }
+
+                    is ApiState.Loading -> {
+                    }
+                }
+            }
+        }
         binding.searchView.setSuggestionsAdapter(
             SimpleCursorAdapter(
                 this,
@@ -85,44 +131,31 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
                 if (newText?.length!! >= 3) {
                     viewModel.search(newText, 5)
                 }
-                lifecycleScope.launch {
-                    viewModel.featureList.collectLatest { result ->
-                        when (result) {
-                            is ApiState.Success -> {
-                                val cursor = MatrixCursor(sAutocompleteColNames)
-
-                                Log.i("TAG", "onQueryTextChange: "+result.data.size)
-                                // get your search terms from the server here, ex:
-
-                                // get your search terms from the server here, ex:
-                                var terms = mutableListOf<Features>()
-                                 terms = result.data as MutableList<Features>
-
-                                // parse your search terms into the MatrixCursor
-
-                                // parse your search terms into the MatrixCursor
-                                for (index in 0 until result.data.size) {
-                                    //if (terms.get(index).properties?.city!=null) {
-                                        Log.i("TAG", "onQueryTextChange"+terms.get(index).properties?.name)
-                                        val term = terms.get(index).properties?.name + " , " + terms.get(index).properties?.country
-                                        val row = arrayOf<Any>(index, term!!)
-                                        cursor.addRow(row)
-                                   // }
-                                }
-
-                                binding.searchView.getSuggestionsAdapter().changeCursor(cursor);
-                            }
-
-                            is ApiState.Failure -> {
-                            }
-
-                            is ApiState.Loading -> {
-                            }
-                        }
-                    }
-                }
                 return true
             }
+        })
+        binding.searchView.setOnSuggestionListener(object : OnSuggestionListener{
+            @SuppressLint("Range")
+            override fun onSuggestionSelect(position: Int): Boolean {
+                for (i in searchList){
+                    Log.d("After", "on ${i.properties?.name}")
+                }
+                val cursor = binding.searchView.suggestionsAdapter.getItem(position) as Cursor
+                val term = cursor.getInt(cursor.getColumnIndex(BaseColumns._ID))
+                Log.d("TAG", "onSuggestionSelect: "+term)
+                    cursor.close()
+                    val  feature = searchList[term]
+                      val coordinates =   feature.geometry?.coordinates
+                Log.d("TAG", "onSuggestionSelect: "+coordinates?.get(0) + coordinates?.get(1))
+                        val p = GeoPoint(coordinates?.get(1)!!,coordinates?.get(0)!!)
+                hoverTo(p)
+                        return true
+            }
+
+            override fun onSuggestionClick(position: Int): Boolean {
+                return onSuggestionSelect(position);
+            }
+
         })
 
 
@@ -192,12 +225,21 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
     }
 
     override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+
+        hoverTo(p)
+
+      return true
+    }
+    override fun longPressHelper(p: GeoPoint?): Boolean {
+        return true
+    }
+
+    fun hoverTo(p:GeoPoint?):Unit {
         controller.animateTo(p)
         marker.position = p
         mMap.overlays.add(marker)
 
         //////////////////////
-
 
 
         var bottomSheetDialog = BottomSheetDialog(act);
@@ -206,9 +248,9 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
         bottomSheetDialog.show();
 
 
-        val dismissBtn:Button = view1.findViewById(R.id.dismiss);
-        val confirmBtn:Button = view1.findViewById(R.id.confirm)
-        val addrtext:TextView = view1.findViewById(R.id.textViewaddr)
+        val dismissBtn: Button = view1.findViewById(R.id.dismiss);
+        val confirmBtn: Button = view1.findViewById(R.id.confirm)
+        val addrtext: TextView = view1.findViewById(R.id.textViewaddr)
 
         val addresses: List<Address>?
         if (p != null) {
@@ -229,7 +271,7 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
             val postalCode = addresses!![0].postalCode
             val knownName = addresses!![0].featureName // Only if available else return NULL
 
-            addrtext.text =address
+            addrtext.text = address
 
         }
 
@@ -237,22 +279,24 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
             bottomSheetDialog.dismiss()
         }
         confirmBtn.setOnClickListener {
-            val intent = Intent(act,MainActivity::class.java)
-            if (p != null) {
-                intent.putExtra("lat",p.latitude)
-                intent.putExtra("long",p.longitude)
-            }
-            startActivity(intent)
-
+           // change the location Shared preference
+           val  sharedPref = act.getSharedPreferences("mypref", Context.MODE_PRIVATE)
+            putDouble(sharedPref.edit(),"lat",p?.latitude!!)
+            putDouble(sharedPref.edit(),"long", p.longitude)
 
         }
 
-
-
-      return true
     }
-    override fun longPressHelper(p: GeoPoint?): Boolean {
-        return true
+    fun putDouble(edit: SharedPreferences.Editor, key: String?, value: Double): SharedPreferences.Editor? {
+        return edit.putLong(key, java.lang.Double.doubleToRawLongBits(value))
     }
 
+    fun getDouble(prefs: SharedPreferences, key: String?, defaultValue: Double): Double {
+        return java.lang.Double.longBitsToDouble(
+            prefs.getLong(
+                key,
+                java.lang.Double.doubleToLongBits(defaultValue)
+            )
+        )
+    }
 }

@@ -20,8 +20,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.jawwy.Map.MapActivity
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
+import com.example.jawwy.databinding.ActivityMainBinding
 import com.example.jawwy.model.WeatherRepository
 import com.example.jawwy.network.WeatherRemoteDataSource
+import com.example.jawwy.settings.view.SettingsActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
@@ -34,7 +36,7 @@ import com.google.android.gms.location.Priority
 private const val My_LOCATION_PERMISSION_ID = 5005
 
 class MainActivity : AppCompatActivity() {
-    lateinit var tv : TextView
+    lateinit var binding: ActivityMainBinding
      var isFirstTime =true
     private lateinit var locationCallback: LocationCallback
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -42,7 +44,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var sharedPref:SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val act = this
         val viewModel =  CurrentWeatherViewModel(WeatherRepository(WeatherRemoteDataSource()))
          sharedPref = act.getSharedPreferences("mypref",Context.MODE_PRIVATE)
@@ -79,9 +82,12 @@ class MainActivity : AppCompatActivity() {
 
         Log.i("TAG", "onCreate: isfirst $isFirstTime")
 
-        tv=findViewById(R.id.ttt)
-        tv.setOnClickListener {
+
+        binding.favImage.setOnClickListener {
             startActivity(Intent(act,MapActivity::class.java))
+        }
+        binding.settingsImage.setOnClickListener {
+            startActivity(Intent(act,SettingsActivity::class.java))
         }
     }
 

@@ -8,5 +8,5 @@ import retrofit2.http.Query
 
 interface SearchService {
     @GET("api/")
-    suspend fun searchLocation(@Query("q") query: String, @Query("limit") limit: Int): Response<SearchPojo>
+    suspend fun searchLocation(@Query("q") query: String, @Query("limit") limit: Int,@Query("lang") lang : String): Response<SearchPojo>
 }
