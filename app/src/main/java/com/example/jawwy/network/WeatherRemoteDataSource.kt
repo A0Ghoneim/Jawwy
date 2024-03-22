@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
-class WeatherRemoteDataSource: IWeatherRemoteDataSource {
+object WeatherRemoteDataSource: IWeatherRemoteDataSource {
     val retrofitService : WeatherService by lazy {
         RetrofitHelper.retrofit.create(WeatherService::class.java)
     }

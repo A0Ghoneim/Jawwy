@@ -1,10 +1,16 @@
 package com.example.jawwy.model.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.jawwy.model.db.Converters
 import com.google.gson.annotations.SerializedName
 
-
+@Entity
+@TypeConverters(Converters::class)
 data class Hourly (
-
+    @PrimaryKey(autoGenerate = true)
+    @SerializedName("id") var id: Int = 0,
     @SerializedName("dt"         ) var dt         : Int?               = null,
     @SerializedName("temp"       ) var temp       : Double?            = null,
     @SerializedName("feels_like" ) var feelsLike  : Double?            = null,

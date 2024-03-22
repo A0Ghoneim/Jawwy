@@ -3,7 +3,6 @@ package com.example.jawwy.Map
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.MatrixCursor
@@ -22,13 +21,14 @@ import android.widget.SimpleCursorAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.jawwy.MainActivity
 import com.example.jawwy.R
 import com.example.jawwy.databinding.ActivityMapBinding
-import com.example.jawwy.model.WeatherRepository
+import com.example.jawwy.model.db.WeatherLocalDataSource
+import com.example.jawwy.model.repo.WeatherRepository
 import com.example.jawwy.model.searchdata.Features
+import com.example.jawwy.model.sharedprefrence.SharedPreferenceDatasource
 import com.example.jawwy.network.WeatherRemoteDataSource
-import com.example.jawwy.search.ViewModel.ApiState
+import com.example.jawwy.search.ViewModel.FeatureApiState
 import com.example.jawwy.search.ViewModel.SearchViewModel
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -69,12 +69,12 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
         val binding = ActivityMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel = SearchViewModel(WeatherRepository(WeatherRemoteDataSource()))
+        val viewModel = SearchViewModel(WeatherRepository(WeatherRemoteDataSource,WeatherLocalDataSource.getInstance(this),SharedPreferenceDatasource.getInstance(this)))
 
         lifecycleScope.launch {
             viewModel.featureList.collectLatest { result ->
                 when (result) {
-                    is ApiState.Success -> {
+                    is FeatureApiState.Success -> {
                         val cursor = MatrixCursor(sAutocompleteColNames)
 
                         Log.i("TAG", "onQueryTextChange: "+result.data.size)
@@ -105,10 +105,10 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
                         binding.searchView.getSuggestionsAdapter().changeCursor(cursor);
                     }
 
-                    is ApiState.Failure -> {
+                    is FeatureApiState.Failure -> {
                     }
 
-                    is ApiState.Loading -> {
+                    is FeatureApiState.Loading -> {
                     }
                 }
             }

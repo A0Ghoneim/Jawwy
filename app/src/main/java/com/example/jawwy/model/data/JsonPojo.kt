@@ -1,10 +1,17 @@
 package com.example.jawwy.model.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.jawwy.model.db.Converters
 import com.google.gson.annotations.SerializedName
 
+@Entity
+@TypeConverters(Converters::class)
 
 data class JsonPojo (
-
+    @PrimaryKey
+    @SerializedName("id") var id: String,
     @SerializedName("lat"             ) var lat            : Double?           = null,
     @SerializedName("lon"             ) var lon            : Double?           = null,
     @SerializedName("timezone"        ) var timezone       : String?           = null,
