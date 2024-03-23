@@ -4,6 +4,9 @@ import com.example.jawwy.model.data.JsonPojo
 import kotlinx.coroutines.flow.Flow
 
 interface IWeatherLocalDataSource {
+
+    suspend fun getAllWeather(): Flow<List<JsonPojo>>
+
     suspend fun getWeatherById(id:String): Flow<JsonPojo>
 
     suspend fun delete(w: JsonPojo):Int

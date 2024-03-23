@@ -24,6 +24,7 @@ import com.example.jawwy.currentweather.viewmodel.CurrentWeatherVieModelFactory
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.currentweather.viewmodel.WeatherApiState
 import com.example.jawwy.databinding.ActivityMainBinding
+import com.example.jawwy.favourites.FavouritesActivity
 import com.example.jawwy.model.db.WeatherLocalDataSource
 import com.example.jawwy.model.repo.WeatherRepository
 import com.example.jawwy.model.sharedprefrence.SharedPreferenceDatasource
@@ -97,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         }
 
             binding.favImage.setOnClickListener {
-                startActivity(Intent(act, MapActivity::class.java))
+                startActivity(Intent(act, FavouritesActivity::class.java))
             }
             binding.settingsImage.setOnClickListener {
                 startActivity(Intent(act, SettingsActivity::class.java))

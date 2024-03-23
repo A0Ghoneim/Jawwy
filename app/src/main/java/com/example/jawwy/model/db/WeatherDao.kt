@@ -9,6 +9,8 @@ import com.example.jawwy.model.data.JsonPojo
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface WeatherDao {
+        @Query("Select * from JsonPojo")
+        fun getAllWeather(): Flow<List<JsonPojo>>
         @Query("Select * from JsonPojo where id =:id")
         fun getWeatherById(id:String): Flow<JsonPojo>
 

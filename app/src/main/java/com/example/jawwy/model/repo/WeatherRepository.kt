@@ -21,6 +21,10 @@ class WeatherRepository(val weatherRemoteDataSource: IWeatherRemoteDataSource, v
         return weatherRemoteDataSource.makeSearchCall(place,limit)
     }
 
+    override suspend fun getAllWeather(): Flow<List<JsonPojo>> {
+        return weatherLocalDataSource.getAllWeather()
+    }
+
     override suspend fun getWeatherById(id:String): Flow<JsonPojo> {
         return weatherLocalDataSource.getWeatherById(id)
     }

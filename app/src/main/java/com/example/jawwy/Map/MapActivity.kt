@@ -3,6 +3,7 @@ package com.example.jawwy.Map
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.MatrixCursor
@@ -20,9 +21,15 @@ import android.widget.SearchView.OnSuggestionListener
 import android.widget.SimpleCursorAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.jawwy.R
+import com.example.jawwy.currentweather.viewmodel.CurrentWeatherVieModelFactory
+import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.databinding.ActivityMapBinding
+import com.example.jawwy.favourites.FavouritesActivity
+import com.example.jawwy.favourites.viewholder.FavouriteViewModel
+import com.example.jawwy.favourites.viewholder.FavouriteViewModelFactory
 import com.example.jawwy.model.db.WeatherLocalDataSource
 import com.example.jawwy.model.repo.WeatherRepository
 import com.example.jawwy.model.searchdata.Features
@@ -32,6 +39,7 @@ import com.example.jawwy.search.ViewModel.FeatureApiState
 import com.example.jawwy.search.ViewModel.SearchViewModel
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.osmdroid.api.IMapController
@@ -64,6 +72,7 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
     lateinit var geocoder:Geocoder
     lateinit var act:MapActivity
     lateinit var searchList : ArrayList<Features>
+    lateinit var weatherViewModel : CurrentWeatherViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMapBinding.inflate(layoutInflater)
@@ -71,6 +80,14 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
 
         val viewModel = SearchViewModel(WeatherRepository(WeatherRemoteDataSource,WeatherLocalDataSource.getInstance(this),SharedPreferenceDatasource.getInstance(this)))
 
+        val factory = CurrentWeatherVieModelFactory(
+            WeatherRepository(
+                WeatherRemoteDataSource,
+                WeatherLocalDataSource.getInstance(this),
+                SharedPreferenceDatasource.getInstance(this)
+            ), this
+        )
+        weatherViewModel = ViewModelProvider(this, factory).get(CurrentWeatherViewModel::class.java)
         lifecycleScope.launch {
             viewModel.featureList.collectLatest { result ->
                 when (result) {
@@ -85,10 +102,6 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
                         terms = result.data as MutableList<Features>
 
                         searchList=terms as ArrayList<Features>
-
-                        for (i in  0 .. 4){
-                            Log.d("TAG", "onCreateeeeee: $i  ${searchList[i]?.properties?.name}")
-                        }
 
                         // parse your search terms into the MatrixCursor
 
@@ -273,18 +286,24 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
 
             addrtext.text = address
 
+
+            dismissBtn.setOnClickListener {
+                bottomSheetDialog.dismiss()
+            }
+            confirmBtn.setOnClickListener {
+                Log.i("TAG", "hoverTo: "+p.latitude)
+                // change the location Shared preference
+                weatherViewModel.putlat(p.latitude)
+                weatherViewModel.putLong(p.longitude)
+
+                    weatherViewModel.fetchWeather()
+
+                startActivity(Intent(this,FavouritesActivity::class.java))
+
+            }
         }
 
-        dismissBtn.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-        confirmBtn.setOnClickListener {
-           // change the location Shared preference
-           val  sharedPref = act.getSharedPreferences("mypref", Context.MODE_PRIVATE)
-            putDouble(sharedPref.edit(),"lat",p?.latitude!!)
-            putDouble(sharedPref.edit(),"long", p.longitude)
 
-        }
 
     }
     fun putDouble(edit: SharedPreferences.Editor, key: String?, value: Double): SharedPreferences.Editor? {

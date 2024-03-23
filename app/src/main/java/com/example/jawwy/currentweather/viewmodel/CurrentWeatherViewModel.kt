@@ -18,7 +18,7 @@ private const val TAG = "CurrentWeatherViewModel"
 class CurrentWeatherViewModel(private val repository: IWeatherRepository,val context: Context) : ViewModel(){
     private var _weatherobj= MutableStateFlow<WeatherApiState>(WeatherApiState.Loading)
     val weatherobj = _weatherobj
-    var currpojo : JsonPojo? = null
+    //var currpojo : JsonPojo
 
     fun fetchWeather(){
         val lat = repository.getLatitude()
@@ -29,7 +29,7 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
                 repository.getUnit(),
                 repository.getLanguage()
             )
-            currpojo?.let { saveWeather(it) }
+           // currpojo?.let { saveWeather(it) }
         }
         else{
             val roundedlat = lat.round(4)
@@ -55,7 +55,7 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
             repository.getWeather(lat, long,units,language).collectLatest { data ->
                 if (data.isSuccessful){
                     _weatherobj.value = WeatherApiState.Success(data.body()!!)
-                    currpojo=data.body()
+                    saveWeather(data.body()!!)
                     Log.i(TAG, "getWeather: "+data.body()?.current?.dt)
                     Log.i(TAG, "getWeather: "+data.body()?.current?.temp)
                 }else{

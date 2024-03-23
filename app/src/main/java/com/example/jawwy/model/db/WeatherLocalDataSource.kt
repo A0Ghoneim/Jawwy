@@ -21,6 +21,11 @@ class WeatherLocalDataSource private constructor(val context: Context):IWeatherL
             }
         }
     }
+
+    override suspend fun getAllWeather(): Flow<List<JsonPojo>> {
+        return myDAO.getAllWeather()
+    }
+
     override suspend fun getWeatherById(id:String): Flow<JsonPojo> {
         return myDAO.getWeatherById(id)
     }

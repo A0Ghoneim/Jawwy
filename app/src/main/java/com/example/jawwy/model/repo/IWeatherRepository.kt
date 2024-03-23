@@ -14,6 +14,7 @@ interface IWeatherRepository {
     ): Flow<Response<JsonPojo>>
 
     fun search(place :String,limit : Int):Flow<Response<SearchPojo>>
+    suspend fun getAllWeather(): Flow<List<JsonPojo>>
 
     suspend fun getWeatherById(id: String): Flow<JsonPojo>
 
