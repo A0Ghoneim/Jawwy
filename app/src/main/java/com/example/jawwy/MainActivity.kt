@@ -2,6 +2,7 @@ package com.example.jawwy
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -20,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.jawwy.Map.MapActivity
+import com.example.jawwy.alert.view.AlertsActivity
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherVieModelFactory
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.currentweather.viewmodel.WeatherApiState
@@ -58,6 +60,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (notificationManager.areNotificationsEnabled()){
+
+        }
+        else {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                100)
+        }
+
+
         act = this
         ctx = this
         factory = CurrentWeatherVieModelFactory(
@@ -102,6 +115,9 @@ class MainActivity : AppCompatActivity() {
             }
             binding.settingsImage.setOnClickListener {
                 startActivity(Intent(act, SettingsActivity::class.java))
+            }
+            binding.alertFloatingActionButton.setOnClickListener {
+                startActivity(Intent(act,AlertsActivity::class.java))
             }
     }
 
@@ -242,6 +258,7 @@ class MainActivity : AppCompatActivity() {
                 !TextUtils.isEmpty(locationProviders)
             }
         }
+
 
 
     }

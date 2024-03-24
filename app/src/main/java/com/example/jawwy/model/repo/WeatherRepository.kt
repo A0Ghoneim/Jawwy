@@ -1,5 +1,6 @@
 package com.example.jawwy.model.repo
 
+import com.example.jawwy.alert.AlertItem
 import com.example.jawwy.model.data.JsonPojo
 import com.example.jawwy.model.db.IWeatherLocalDataSource
 import com.example.jawwy.model.db.WeatherLocalDataSource
@@ -25,6 +26,10 @@ class WeatherRepository(val weatherRemoteDataSource: IWeatherRemoteDataSource, v
         return weatherLocalDataSource.getAllWeather()
     }
 
+    override suspend fun getAllAlerts(): Flow<List<AlertItem>> {
+        return weatherLocalDataSource.getAllAlerts()
+    }
+
     override suspend fun getWeatherById(id:String): Flow<JsonPojo> {
         return weatherLocalDataSource.getWeatherById(id)
     }
@@ -35,6 +40,14 @@ class WeatherRepository(val weatherRemoteDataSource: IWeatherRemoteDataSource, v
 
     override suspend fun insert(w: JsonPojo): Long {
         return weatherLocalDataSource.insert(w)
+    }
+
+    override suspend fun deleteAlert(alertItem: AlertItem): Int {
+        return weatherLocalDataSource.deleteAlert(alertItem)
+    }
+
+    override suspend fun insertAlert(alertItem: AlertItem): Long {
+        return weatherLocalDataSource.insertAlert(alertItem)
     }
 
     override fun getKey(): String {

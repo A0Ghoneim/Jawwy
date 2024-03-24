@@ -86,6 +86,7 @@ class FavouritesActivity : AppCompatActivity() {
 
             binding.floatingActionButton.setOnClickListener {
                 startActivity(Intent(this,MapActivity::class.java))
+                finish()
             }
     }
 }

@@ -10,10 +10,32 @@ import com.example.jawwy.model.data.Temp
 import com.example.jawwy.model.data.Weather
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class Converters {
     private val gson = Gson()
 
+    companion object {
+         val formatter: DateTimeFormatter =
+            DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    }
+
+    @TypeConverter
+    fun toLocalDateTime(value: String?): LocalDateTime? {
+        return value?.let {
+            return try {
+                LocalDateTime.parse(it, formatter)
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    @TypeConverter
+    fun fromLocalDateTime(date: LocalDateTime?): String? {
+        return date?.format(formatter)
+    }
     @TypeConverter
     fun fromCurrentWeather(currentWeather: Current?): String {
         return currentWeather.let { gson.toJson(it) }

@@ -1,6 +1,7 @@
 package com.example.jawwy.model.db
 
 import android.content.Context
+import com.example.jawwy.alert.AlertItem
 import com.example.jawwy.model.data.JsonPojo
 import kotlinx.coroutines.flow.Flow
 
@@ -26,6 +27,10 @@ class WeatherLocalDataSource private constructor(val context: Context):IWeatherL
         return myDAO.getAllWeather()
     }
 
+    override suspend fun getAllAlerts(): Flow<List<AlertItem>> {
+        return myDAO.getAllAlerts()
+    }
+
     override suspend fun getWeatherById(id:String): Flow<JsonPojo> {
         return myDAO.getWeatherById(id)
     }
@@ -36,5 +41,13 @@ class WeatherLocalDataSource private constructor(val context: Context):IWeatherL
 
     override suspend fun insert(w: JsonPojo): Long {
         return myDAO.insertWeather(w)
+    }
+
+    override suspend fun deleteAlert(a: AlertItem): Int {
+        return myDAO.deleteAlert(a)
+    }
+
+    override suspend fun insertAlert(a: AlertItem): Long {
+        return myDAO.insertAlert(a)
     }
 }

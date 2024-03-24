@@ -299,6 +299,7 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
                     weatherViewModel.fetchWeather()
 
                 startActivity(Intent(this,FavouritesActivity::class.java))
+                finish()
 
             }
         }

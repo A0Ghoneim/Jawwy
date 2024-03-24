@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+
 
     <application
         android:allowBackup="true"
@@ -17,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jawwy"
         tools:targetApi="31">
+        <activity
+            android:name=".alert.view.AlertsActivity"
+            android:exported="false" />
         <activity
             android:name=".favourites.FavouritesActivity"
             android:exported="false" />
@@ -39,10 +45,6 @@
             android:value="YOUR_API_KEY" />
 
         <activity
-            android:name=".Map.trialActivity"
-            android:exported="false"
-            android:label="@string/title_activity_trial" />
-        <activity
             android:name=".Map.MapActivity"
             android:exported="false" />
         <activity
@@ -54,6 +56,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".alert.AlertReceiver"/>
     </application>
 
 </manifest>
