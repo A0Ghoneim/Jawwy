@@ -22,6 +22,8 @@ interface IWeatherRepository {
 
     suspend fun delete(w: JsonPojo):Int
 
+    suspend fun deleteFromGps():Int
+
     suspend fun insert(w: JsonPojo):Long
 
     suspend fun deleteAlert(alertItem: AlertItem):Int

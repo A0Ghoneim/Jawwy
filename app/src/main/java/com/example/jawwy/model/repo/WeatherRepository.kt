@@ -42,6 +42,10 @@ class WeatherRepository(val weatherRemoteDataSource: IWeatherRemoteDataSource, v
         return weatherLocalDataSource.insert(w)
     }
 
+    override suspend fun deleteFromGps(): Int {
+        return weatherLocalDataSource.deleteFromGps()
+    }
+
     override suspend fun deleteAlert(alertItem: AlertItem): Int {
         return weatherLocalDataSource.deleteAlert(alertItem)
     }

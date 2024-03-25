@@ -23,14 +23,15 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
     val weatherobj = _weatherobj
     //var currpojo : JsonPojo
 
-    fun fetchWeather(){
+    fun fetchWeather(isfromgps:Boolean = false){
         val lat = repository.getLatitude()
         val long = repository.getLongitude()
         if (isOnline(context)) {
             getWeather(
                 lat, long,
                 repository.getUnit(),
-                repository.getLanguage()
+                repository.getLanguage(),
+                isfromgps
             )
            // currpojo?.let { saveWeather(it) }
         }
@@ -52,13 +53,24 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
         lat: Double,
         long: Double,
         units: String = "metric",
-        language: String = "en"
+        language: String = "en",
+        isfromgps:Boolean
     ){
         viewModelScope.launch(Dispatchers.IO) {
+            // delete the saved one
+            if (isfromgps) {
+                repository.deleteFromGps()
+            }
             repository.getWeather(lat, long,units,language).collectLatest { data ->
                 if (data.isSuccessful){
                     _weatherobj.value = WeatherApiState.Success(data.body()!!)
-                    saveWeather(data.body()!!)
+                    val mypojo = data.body() as JsonPojo
+                    if (isfromgps){
+                        mypojo.gps="yes"
+                    }else{
+                        mypojo.gps="no"
+                    }
+                    saveWeather(mypojo)
                     Log.i(TAG, "getWeather: "+data.body()?.current?.dt)
                     Log.i(TAG, "getWeather: "+data.body()?.current?.temp)
                 }else{

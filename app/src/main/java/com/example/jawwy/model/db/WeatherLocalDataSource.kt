@@ -39,6 +39,10 @@ class WeatherLocalDataSource private constructor(val context: Context):IWeatherL
         return myDAO.deleteWeather(w)
     }
 
+    override suspend fun deleteFromGps(): Int {
+        return myDAO.deleteFromGps()
+    }
+
     override suspend fun insert(w: JsonPojo): Long {
         return myDAO.insertWeather(w)
     }

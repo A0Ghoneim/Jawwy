@@ -17,6 +17,7 @@ interface WeatherDao {
 
         @Query("Select * from AlertItem")
         fun getAllAlerts():Flow<List<AlertItem>>
+
         @Insert(onConflict = OnConflictStrategy.REPLACE)
         suspend fun insertWeather(w: JsonPojo) : Long
 
@@ -28,5 +29,8 @@ interface WeatherDao {
 
         @Delete
         suspend fun deleteAlert(a:AlertItem):Int
+
+        @Query("DELETE FROM JsonPojo WHERE gps = 'yes'")
+        fun deleteFromGps():Int
 
 }

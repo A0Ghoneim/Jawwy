@@ -227,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                     viewModel.putlat(lat)
                     viewModel.putLong(long)
                     ////////
-                    viewModel.fetchWeather()
+                    viewModel.fetchWeather(true)
                     ///////
                     mFusedLocationClient.removeLocationUpdates(locationCallback)
                 }
