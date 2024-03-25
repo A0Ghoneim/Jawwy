@@ -54,6 +54,7 @@ lateinit var context : Context
         holder.cardView.setOnClickListener {
             weatherViewModel.putlat(currenWeather.lat!!)
             weatherViewModel.putLong(currenWeather.lon!!)
+            weatherViewModel.putLocationSettings("manual")
             context.startActivity(Intent(context,MainActivity::class.java))
 
         }

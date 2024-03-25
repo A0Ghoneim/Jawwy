@@ -1,6 +1,8 @@
 package com.example.jawwy.currentweather.viewmodel
 
 import android.content.Context
+import android.location.Address
+import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
@@ -13,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 private const val TAG = "CurrentWeatherViewModel"
 class CurrentWeatherViewModel(private val repository: IWeatherRepository,val context: Context) : ViewModel(){
@@ -64,6 +67,15 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
             }
         }
     }
+    fun getAddress(context: Context,lat:Double,long:Double): Address {
+//        val lat:Double = repository.getLatitude()
+//        val long:Double = repository.getLongitude()
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses: List<Address>?
+        addresses = geocoder.getFromLocation(lat,long,1)
+        // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        return addresses!![0]
+    }
 
     private fun getSavedWeather(id:String){
         viewModelScope.launch(Dispatchers.IO) {
@@ -104,11 +116,14 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
         return false
     }
 
-   fun getkey():String{
-       return repository.getKey()
+   fun getLocationSettings():String{
+       return repository.getLocationSettings()
    }
-    fun putkey(key:String){
-        repository.putKey(key)
+    fun getUnit():String{
+        return repository.getUnit()
+    }
+    fun putLocationSettings(key:String){
+        repository.putLocationSettings(key)
     }
     fun putlat(lat:Double){
         repository.putLatitude(lat)

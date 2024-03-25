@@ -295,6 +295,7 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
                 // change the location Shared preference
                 weatherViewModel.putlat(p.latitude)
                 weatherViewModel.putLong(p.longitude)
+                weatherViewModel.putLocationSettings("manual")
 
                     weatherViewModel.fetchWeather()
 
@@ -307,16 +308,16 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
 
 
     }
-    fun putDouble(edit: SharedPreferences.Editor, key: String?, value: Double): SharedPreferences.Editor? {
-        return edit.putLong(key, java.lang.Double.doubleToRawLongBits(value))
-    }
-
-    fun getDouble(prefs: SharedPreferences, key: String?, defaultValue: Double): Double {
-        return java.lang.Double.longBitsToDouble(
-            prefs.getLong(
-                key,
-                java.lang.Double.doubleToLongBits(defaultValue)
-            )
-        )
-    }
+//    fun putDouble(edit: SharedPreferences.Editor, key: String?, value: Double): SharedPreferences.Editor? {
+//        return edit.putLong(key, java.lang.Double.doubleToRawLongBits(value))
+//    }
+//
+//    fun getDouble(prefs: SharedPreferences, key: String?, defaultValue: Double): Double {
+//        return java.lang.Double.longBitsToDouble(
+//            prefs.getLong(
+//                key,
+//                java.lang.Double.doubleToLongBits(defaultValue)
+//            )
+//        )
+//    }
 }

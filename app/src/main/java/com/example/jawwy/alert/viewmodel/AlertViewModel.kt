@@ -47,6 +47,7 @@ class AlertViewModel(private val repository: IWeatherRepository):ViewModel() {
         return addresses!![0]
     }
 
+
     fun getAllAlerts(){
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllAlerts().collectLatest {

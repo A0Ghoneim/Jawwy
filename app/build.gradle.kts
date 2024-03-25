@@ -75,6 +75,8 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.10")
     implementation("com.google.android.gms:play-services-location:21.1.0")
 
+    implementation ("com.airbnb.android:lottie:6.3.0")
+
 
     //  implementation 'org.osmdroid:osmdroid-wms:(INSERT_VERSION_HERE)'
 }

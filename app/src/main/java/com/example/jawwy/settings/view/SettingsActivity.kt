@@ -5,25 +5,46 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.RadioButton
+import androidx.lifecycle.ViewModelProvider
 import com.example.jawwy.R
 import com.example.jawwy.databinding.ActivitySettingsBinding
+import com.example.jawwy.favourites.viewholder.FavouriteViewModel
+import com.example.jawwy.favourites.viewholder.FavouriteViewModelFactory
+import com.example.jawwy.model.db.WeatherLocalDataSource
+import com.example.jawwy.model.repo.WeatherRepository
+import com.example.jawwy.model.sharedprefrence.SharedPreferenceDatasource
+import com.example.jawwy.network.WeatherRemoteDataSource
+import com.example.jawwy.settings.viewmodel.SettingsViewModel
+import com.example.jawwy.settings.viewmodel.SettingsViewModelFactory
 
 class SettingsActivity : AppCompatActivity() {
     lateinit var binding:ActivitySettingsBinding
-    lateinit var sharedPref: SharedPreferences
+    lateinit var viewModel:SettingsViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val act = this
-        sharedPref = act.getSharedPreferences("mypref", Context.MODE_PRIVATE)
+        val factory = SettingsViewModelFactory(
+            WeatherRepository(
+                WeatherRemoteDataSource,
+                WeatherLocalDataSource.getInstance(this),
+                SharedPreferenceDatasource.getInstance(this)
+            )
+        )
+         viewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
 
 
-        binding.locationGroup.setOnCheckedChangeListener { group, checkedId ->
+        binding.materialSwitch.setOnCheckedChangeListener { _, isChecked ->
             val key = "location"
-            val value = findViewById<RadioButton>(checkedId).text.toString()
-            sharedPref.edit().putString(key, value).apply()
+            if (isChecked) {
+                viewModel.putLocationSettings("GPS")
+            } else {
+                viewModel.putLocationSettings("manual")
+            }
         }
+
+
         binding.languageGroup.setOnCheckedChangeListener { group, checkedId ->
             val key = "language"
             val value = findViewById<RadioButton>(checkedId).text.toString()
@@ -32,7 +53,7 @@ class SettingsActivity : AppCompatActivity() {
                 getString(R.string.english) -> "en"
                 else -> {"en"}
             }
-            sharedPref.edit().putString(key, res).apply()
+            viewModel.putLanguage(res)
         }
         binding.temperatureGroup.setOnCheckedChangeListener { group, checkedId ->
             val key = "temperature"
@@ -43,12 +64,52 @@ class SettingsActivity : AppCompatActivity() {
                 getString(R.string.kelvin) -> "standard"
                 else -> {"standard"}
             }
-            sharedPref.edit().putString(key, res).apply()
+            when(res){
+                "metric" -> if(!binding.metricRbtn.isChecked)binding.metricRbtn.isChecked=true
+                "imperial" -> if(!binding.mileRbtn.isChecked)binding.mileRbtn.isChecked=true
+                "standard" -> if(!binding.metricRbtn.isChecked)binding.metricRbtn.isChecked=true
+            }
+            viewModel.putUnit(res)
         }
         binding.windGroup.setOnCheckedChangeListener { group, checkedId ->
-            val key = "wind"
+            val key = "temperature"
             val value = findViewById<RadioButton>(checkedId).text.toString()
-            sharedPref.edit().putString(key, value).apply()
+            val res:String = when(value){
+                getString(R.string.mile_hour) -> "mile"
+                getString(R.string.meter_second) -> "meter"
+                else -> {"meter"}
+            }
+            when(res){
+                "mile" -> if(!binding.fahrenheitRbtn.isChecked)binding.fahrenheitRbtn.isChecked=true
+                "meter" -> if (binding.fahrenheitRbtn.isChecked){
+                    binding.kelvinRbtn.isChecked=true
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        when(viewModel.getLocationSettings()){
+            "GPS" -> binding.materialSwitch.isChecked=true
+        }
+        when(viewModel.getLanguage()){
+            "en" -> binding.englishRbtn.isChecked=true
+            "ar" -> binding.arabicRbtn.isChecked=true
+        }
+        when(viewModel.getUnit()){
+            "metric" -> {
+                binding.metricRbtn.isChecked=true
+                binding.celsiusRbtn.isChecked=true
+            }
+            "imperial" -> {
+                binding.mileRbtn.isChecked=true
+                binding.fahrenheitRbtn.isChecked=true
+            }
+            "standard" -> {
+                binding.metricRbtn.isChecked=true
+                binding.kelvinRbtn.isChecked=true
+            }
         }
     }
 }

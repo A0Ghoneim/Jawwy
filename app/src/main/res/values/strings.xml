@@ -11,8 +11,9 @@
     <string name="language">Language</string>
     <string name="english">English</string>
     <string name="arabic">Arabic</string>
-    <string name="tunit">T Unit</string>
-    <string name="wunit">W Unit</string>
+    <string name="tunit">Temperature</string>
+    <string name="wunit">Wind Speed</string>
     <string name="meter_second">Meter/Second</string>
     <string name="mile_hour">Mile/Hour</string>
+    <string name="location_switch">GPS       </string>
 </resources>

@@ -28,8 +28,8 @@ class SharedPreferenceDatasource private constructor(val context: Context) :
         }
     }
 
-    override fun getKey(): String {
-        return sharedPreference.getString("key","no")!!
+    override fun getLocationSettings(): String {
+        return sharedPreference.getString("location","GPS")!!
     }
 
     override fun getLatitude(): Double {
@@ -48,8 +48,8 @@ class SharedPreferenceDatasource private constructor(val context: Context) :
         return sharedPreference.getString("language","en")!!
     }
 
-    override fun putKey(key: String) {
-        editor.putString("key",key).apply()
+    override fun putLocationSettings(key: String) {
+        editor.putString("location",key).apply()
     }
 
     override fun putLatitude(lat: Double) {
