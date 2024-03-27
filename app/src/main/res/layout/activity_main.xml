@@ -19,13 +19,235 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <TextView
+                android:id="@+id/date_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/location_text"
+                app:layout_constraintStart_toStartOf="@+id/location_text"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Sunday, 10 jan" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/day_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintStart_toStartOf="@+id/hourly_recycler"
+                app:layout_constraintTop_toBottomOf="@+id/statistics_box">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/navy">
+
+                    <TextView
+                        android:id="@+id/sevenday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/seven_day_forecast"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/day_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/sevenday" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/statistics_box"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:backgroundTint="#2d5d9b"
+                android:visibility="gone"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintStart_toStartOf="@+id/day_box"
+                app:layout_constraintTop_toBottomOf="@+id/hourly_recycler">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/wind_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toEndOf="@+id/wind_digit"
+                        app:layout_constraintStart_toStartOf="@+id/wind_digit"
+                        app:layout_constraintTop_toBottomOf="@+id/wind_digit"
+                        tools:text="meter/s" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/pressureanimationView"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintEnd_toStartOf="@+id/humidityanimationView"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lottie_autoPlay="true"
+                        app:lottie_colorFilter="@color/white"
+                        app:lottie_loop="false"
+                        app:lottie_rawRes="@raw/animationpressurewhite"
+                        app:lottie_speed="0.5" />
+
+                    <TextView
+                        android:id="@+id/pressure_digit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/calm_yellow"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/pressureanimationView"
+                        app:layout_constraintStart_toStartOf="@+id/pressureanimationView"
+                        app:layout_constraintTop_toBottomOf="@+id/pressureanimationView"
+                        tools:text="1024" />
+
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="hpa"
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toEndOf="@+id/pressure_digit"
+                        app:layout_constraintStart_toStartOf="@+id/pressure_digit"
+                        app:layout_constraintTop_toBottomOf="@+id/pressure_digit" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/humidityanimationView"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintEnd_toStartOf="@+id/windanimationView"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/pressureanimationView"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lottie_autoPlay="true"
+                        app:lottie_colorFilter="@color/white"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/animationwind"
+                        app:lottie_speed="0.5" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/windanimationView"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/humidityanimationView"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lottie_autoPlay="true"
+                        app:lottie_colorFilter="@color/white"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/animationhumidity"
+                        app:lottie_speed="0.5" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/pressure"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/pressureanimationView"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/pressureanimationView"
+                        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+                    <TextView
+                        android:id="@+id/humidity_digit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/calm_yellow"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/humidityanimationView"
+                        app:layout_constraintStart_toStartOf="@+id/humidityanimationView"
+                        app:layout_constraintTop_toBottomOf="@+id/humidityanimationView"
+                        tools:text="77" />
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="%"
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toEndOf="@+id/humidity_digit"
+                        app:layout_constraintStart_toStartOf="@+id/humidity_digit"
+                        app:layout_constraintTop_toBottomOf="@+id/humidity_digit" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Humidity"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/humidityanimationView"
+                        app:layout_constraintStart_toStartOf="@+id/humidityanimationView"
+                        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+                    <TextView
+                        android:id="@+id/wind_digit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/calm_yellow"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/windanimationView"
+                        app:layout_constraintStart_toStartOf="@+id/windanimationView"
+                        app:layout_constraintTop_toBottomOf="@+id/windanimationView"
+                        tools:text="20.14" />
+
+                    <TextView
+                        android:id="@+id/textView15"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Wind Speed"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/windanimationView"
+                        app:layout_constraintStart_toStartOf="@+id/windanimationView"
+                        app:layout_constraintTop_toBottomOf="@+id/wind_unit" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animationView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="-240dp"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:lottie_autoPlay="true"
@@ -38,37 +260,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="80dp"
-                android:text="location"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="location" />
 
             <TextView
                 android:id="@+id/state_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="state"
+                android:layout_marginTop="-16dp"
+                android:fontFamily="sans-serif-light"
                 android:textColor="@color/white"
-                android:textSize="34sp"
+                android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/curr_icon" />
+                app:layout_constraintTop_toBottomOf="@+id/curr_icon"
+                tools:text="state" />
 
             <TextView
                 android:id="@+id/degree_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="15o"
                 android:textColor="@color/white"
                 android:textSize="80sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/location_text" />
+                app:layout_constraintTop_toBottomOf="@+id/location_text"
+                tools:text="15o" />
 
             <ImageView
                 android:id="@+id/curr_icon"
@@ -81,6 +305,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/location_text"
                 tools:srcCompat="@tools:sample/avatars" />
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/hourly_recycler"
                 android:layout_width="382dp"
@@ -88,6 +313,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/state_text" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="82dp"
+                android:layout_height="68dp"
+                android:layout_marginTop="388dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -100,6 +336,7 @@
         android:layout_marginBottom="56dp"
         android:clickable="true"
         android:src="@drawable/notifications_fill"
+        app:backgroundTint="@color/calm_yellow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

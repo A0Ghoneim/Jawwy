@@ -16,4 +16,6 @@
     <string name="meter_second">Meter/Second</string>
     <string name="mile_hour">Mile/Hour</string>
     <string name="location_switch">GPS       </string>
+    <string name="seven_day_forecast">7-day forecast</string>
+    <string name="pressure">Pressure</string>
 </resources>

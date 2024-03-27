@@ -19,7 +19,7 @@ import com.example.jawwy.model.data.Hourly
 import java.util.Date
 import java.util.Locale
 
-class HourAdapter(var dataList:MutableList<Hourly>,var symbol :String):RecyclerView.Adapter<HourAdapter.MyViewHolder>() {
+class HourAdapter(var dataList:MutableList<Hourly>, var symbol :String, var speedUnit:String):RecyclerView.Adapter<HourAdapter.MyViewHolder>() {
     lateinit var context : Context
 
 
@@ -33,10 +33,11 @@ class HourAdapter(var dataList:MutableList<Hourly>,var symbol :String):RecyclerV
     override fun getItemCount(): Int {
         return dataList.size
     }
-    fun updateList(newList: List<Hourly>,newsymbol:String) {
+    fun updateList(newList: List<Hourly>,newsymbol:String,newSpeedSymbol:String) {
         dataList.clear()
         dataList.addAll(newList)
         symbol=newsymbol
+        speedUnit=newSpeedSymbol
         notifyDataSetChanged()
     }
 
@@ -44,6 +45,7 @@ class HourAdapter(var dataList:MutableList<Hourly>,var symbol :String):RecyclerV
         val currentHour:Hourly = dataList[position]
         val d = currentHour.temp ?: 0.0
         val degree:Int = d.toInt()
+        val wind = currentHour.windSpeed
         val icon = currentHour.weather[0].icon
         val link = "https://openweathermap.org/img/wn/$icon@2x.png"
         var localHour = getLocalHourFromUnixTimestamp(currentHour.dt!!)
@@ -57,6 +59,7 @@ class HourAdapter(var dataList:MutableList<Hourly>,var symbol :String):RecyclerV
         Log.i("Hour", "onBindViewHolder: $localHour")
         holder.degreeTV.text="$degree$symbol"
         holder.timeTV.text="$localHour$dayNNightStamp"
+        holder.windTV.text="$wind$speedUnit"
         Glide.with(context).load(link)
             .apply(RequestOptions().override(100, 100)).into(holder.iconView)
     }
@@ -64,6 +67,7 @@ class HourAdapter(var dataList:MutableList<Hourly>,var symbol :String):RecyclerV
         val card: CardView = itemView.findViewById(R.id.hour_card)
         val degreeTV : TextView = itemView.findViewById(R.id.hour_degree)
         val timeTV : TextView = itemView.findViewById(R.id.hour_time)
+        val windTV :TextView = itemView.findViewById(R.id.wind_hour)
         val iconView : ImageView = itemView.findViewById(R.id.hour_imageView)
     }
     fun getLocalHourFromUnixTimestamp(gmtUnixTimestamp: Int): Int {

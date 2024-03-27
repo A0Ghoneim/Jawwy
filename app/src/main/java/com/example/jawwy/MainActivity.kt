@@ -1,21 +1,29 @@
 package com.example.jawwy
 
 import android.Manifest
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.ColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
+import android.view.animation.AlphaAnimation
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginTop
+import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,8 +35,10 @@ import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.currentweather.viewmodel.WeatherApiState
 import com.example.jawwy.databinding.ActivityMainBinding
 import com.example.jawwy.favourites.FavouritesActivity
+import com.example.jawwy.mainadapters.DailyAdapter
 import com.example.jawwy.mainadapters.HourAdapter
 import com.example.jawwy.model.data.Current
+import com.example.jawwy.model.data.Daily
 import com.example.jawwy.model.data.Hourly
 import com.example.jawwy.model.data.JsonPojo
 import com.example.jawwy.model.db.WeatherLocalDataSource
@@ -42,14 +52,21 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.material.animation.AnimationUtils
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import kotlin.math.round
 
 
 private const val My_LOCATION_PERMISSION_ID = 5005
 const val CELSIUS="°C"
 const val FAHRENHEIT="°F"
 const val KELVIN="°K"
+const val METER="meter/s"
+const val MILE="mile/h"
 class MainActivity : AppCompatActivity() {
     lateinit var act: MainActivity
     lateinit var ctx: Context
@@ -61,6 +78,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     lateinit var hourlyAdapter:HourAdapter
+    lateinit var dailyAdapter: DailyAdapter
 
     // lateinit var sharedPref:SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +87,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         /////////////////UI/////////////////////////
-            drawHourly(arrayListOf(), KELVIN)
+            drawHourly(arrayListOf(), KELVIN, METER)
+            drawDaily(arrayListOf(), KELVIN)
+
+        val anim =android.view.animation.AnimationUtils.loadAnimation(this,R.anim.popup_anim)
+
 
         ////////////////UI//////////////////////////
 
@@ -106,7 +128,14 @@ class MainActivity : AppCompatActivity() {
                 when (result) {
                     is WeatherApiState.Success -> {
                         drawCurrent(result.data,this@MainActivity)
-//                       binding.progressBar2.visibility = View.GONE
+                       binding.progressBar.visibility = View.GONE
+                        binding.dayBox.visibility = View.VISIBLE
+                        binding.statisticsBox.visibility = View.VISIBLE
+                        binding.pressureanimationView.startAnimation(anim)
+                        binding.humidityanimationView.startAnimation(anim)
+                        binding.windanimationView.startAnimation(anim)
+
+
 //                       var myadapter= ProductAdapter(act, result.data as ArrayList<Product>,act, R.layout.list_row, ADD)
 //                       binding.recyclerView.adapter=myadapter
                         Log.i(
@@ -116,11 +145,12 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     is WeatherApiState.Failure -> {
-                        // binding.progressBar2.visibility = View.GONE
+                         binding.progressBar.visibility = View.GONE
                     }
 
                     is WeatherApiState.Loading -> {
-                        //binding.progressBar2.visibility = View.VISIBLE }
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.animationView.visibility = View.GONE
                     }
                 }
             }
@@ -273,7 +303,26 @@ class MainActivity : AppCompatActivity() {
             "standard" -> KELVIN
             else -> KELVIN
         }
+        val speedUnit = when(viewModel.getUnit()){
+            "metric" -> METER
+            "imperial" -> MILE
+            "standard" -> METER
+            else -> METER
+        }
         val current:Current = jsonPojo.current ?:Current()
+        when(jsonPojo.daily[0].weather[0].main){
+            "Rain" -> {binding.animationView.setAnimation(R.raw.animationrainy)
+                binding.animationView.setPadding(0,-1000,0,0)
+                        binding.animationView.visibility = View.VISIBLE}
+            "Snow" -> {binding.animationView.setAnimation(R.raw.animationsnoww)
+                binding.animationView.setPadding(0,-2100,0,0)
+                binding.animationView.visibility = View.VISIBLE}
+            "Clouds" -> {binding.animationView.setAnimation(R.raw.animationgreyclouds)
+                binding.animationView.visibility = View.VISIBLE}
+        }
+        val pressure = current.pressure ?: 0
+        val humidity = current.humidity ?: 0
+        val windSpeed = current.windSpeed ?: 0.0
         val d = current.temp ?: 0.0
         val degree:Int = d.toInt()
         val state = current.weather[0].description ?:""
@@ -282,6 +331,11 @@ class MainActivity : AppCompatActivity() {
         binding.locationText.text="$city/$country"
         binding.degreeText.text="$degree$symbol"
         binding.stateText.text="$state"
+        binding.dateTextView.text=getDateDetailsFromUnixTimestamp(current.dt!!)
+        animateTextView(0,pressure,binding.pressureDigit)
+        animateTextView(0,humidity,binding.humidityDigit)
+        animateTextView(0.0,windSpeed,binding.windDigit)
+        binding.windUnit.text=speedUnit
         Log.i("Icon", "drawCurrent: $link")
         Glide.with(context).load(link)
             .apply(RequestOptions().override(100, 100)).into(binding.currIcon)
@@ -290,16 +344,58 @@ class MainActivity : AppCompatActivity() {
         for (i in 0..23){
             first24hourList.add(fullHourlyList[i])
         }
-        updateHourly(first24hourList,symbol)
+        updateHourly(first24hourList,symbol,speedUnit)
+        updateDaily(jsonPojo.daily,symbol)
     }
-    fun drawHourly(hourlyList: MutableList<Hourly>,symbol:String){
+    fun drawHourly(hourlyList: MutableList<Hourly>, symbol: String, speedUnit: String){
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation= LinearLayoutManager.HORIZONTAL
         binding.hourlyRecycler.layoutManager=linearLayoutManager
-        hourlyAdapter= HourAdapter(hourlyList,symbol)
+        hourlyAdapter= HourAdapter(hourlyList,symbol,speedUnit)
         binding.hourlyRecycler.adapter=hourlyAdapter
     }
-    fun updateHourly(hourlyList: MutableList<Hourly>,symbol:String){
-        hourlyAdapter.updateList(hourlyList,symbol)
+    fun updateHourly(hourlyList: MutableList<Hourly>, symbol: String, speedUnit: String){
+        hourlyAdapter.updateList(hourlyList,symbol,speedUnit)
+    }
+
+    fun drawDaily(dailyList: MutableList<Daily>, symbol: String){
+        val linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager.orientation= LinearLayoutManager.VERTICAL
+        binding.dayRecycler.layoutManager=linearLayoutManager
+        dailyAdapter=DailyAdapter(dailyList,symbol)
+        binding.dayRecycler.adapter=dailyAdapter
+    }
+    fun updateDaily(dailyList: MutableList<Daily>, symbol: String){
+        dailyAdapter.updateList(dailyList,symbol)
+    }
+
+    fun animateTextView(initialValue: Int, finalValue: Int, textview: TextView) {
+        val valueAnimator = ValueAnimator.ofInt(initialValue, finalValue)
+        valueAnimator.setDuration(3000)
+        valueAnimator.addUpdateListener { valueAnimator ->
+            textview.text = valueAnimator.animatedValue.toString()
+        }
+        valueAnimator.start()
+    }
+    fun animateTextView(initialValue: Double, finalValue: Double, textview: TextView) {
+        val valueAnimator = ValueAnimator.ofFloat(initialValue.toFloat(),finalValue.toFloat())
+        valueAnimator.setDuration(2000)
+        valueAnimator.addUpdateListener { valueAnimator ->
+            val roundedValue = round(valueAnimator.animatedValue.toString().toDouble() * 1000) / 1000 // Round to 3 decimal places
+            textview.text = roundedValue.toString()
+        }
+        valueAnimator.start()
+    }
+    fun getDateDetailsFromUnixTimestamp(unixTimestamp: Int): String {
+        val localDateTime = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(unixTimestamp.toLong()),
+            ZoneId.systemDefault()
+        )
+
+        val weekday = localDateTime.dayOfWeek.toString() // Day of week (e.g., "MONDAY")
+        val dayOfMonth = localDateTime.dayOfMonth // Day of month (e.g., 25)
+        val month = localDateTime.month.toString() // Month (e.g., "MARCH")
+
+        return "$weekday, $dayOfMonth $month"
     }
 }
