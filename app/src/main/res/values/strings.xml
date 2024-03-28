@@ -18,4 +18,6 @@
     <string name="location_switch">GPS       </string>
     <string name="seven_day_forecast">7-day forecast</string>
     <string name="pressure">Pressure</string>
+    <string name="favourites">Favourites</string>
+    <string name="alerts">Alerts</string>
 </resources>

@@ -2,9 +2,11 @@ package com.example.jawwy.favourites
 
 import android.content.Context
 import android.content.Intent
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
@@ -37,8 +39,9 @@ lateinit var context : Context
 
             //meal=this.meal;
             // Create a PopupMenu and inflate the menu resource
-            val popupMenu = PopupMenu(context,it)
+        /*    val popupMenu = PopupMenu(context,it,Gravity.RIGHT)
             popupMenu.inflate(R.menu.delete_menu)
+            popupMenu.setForceShowIcon(true)
             Toast.makeText(context, "hjkhjk", Toast.LENGTH_SHORT).show()
 
             // Set up a listener for menu item clicks
@@ -48,7 +51,32 @@ lateinit var context : Context
             }
 
             // Show the PopupMenu
-            popupMenu.show()
+            popupMenu.show()*/
+
+            val  inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val view = inflater.inflate(R.layout.refresh_menu_item_action_layout, null);
+
+           val  start:CardView =view.findViewById(R.id.deleter)
+
+            val  mypopupWindow =PopupWindow (view, 400, 210, true);
+
+            start.setOnClickListener {
+                Toast.makeText(context, "action", Toast.LENGTH_SHORT).show()
+                viewModel.deletefav(currenWeather)
+                mypopupWindow.dismiss()
+            }
+
+
+
+
+           /* mypopupWindow.contentView.setOnClickListener{
+                Toast.makeText(context, "dismisser", Toast.LENGTH_SHORT).show()
+
+            }*/
+
+
+            mypopupWindow.showAsDropDown(it,700,-100);
+
             true
         }
         holder.cardView.setOnClickListener {
@@ -60,7 +88,6 @@ lateinit var context : Context
         }
         holder.cityTV.text=address.locality
         holder.countryTV.text=address.countryName
-        holder.degreeTV.text= currenWeather.current?.temp.toString()
     }
 
     override fun getItemCount(): Int {
@@ -78,6 +105,5 @@ lateinit var context : Context
         val cardView:CardView = itemView.findViewById(R.id.fav_card)
         val cityTV : TextView = itemView.findViewById(R.id.city_name)
         val countryTV : TextView = itemView.findViewById(R.id.country_name)
-        val degreeTV : TextView = itemView.findViewById(R.id.degree)
     }
 }

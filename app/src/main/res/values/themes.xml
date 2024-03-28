@@ -6,6 +6,7 @@
         <item name="colorOnSurface">@color/white</item>
         <item name="colorPrimary">@color/calm_yellow</item>
         <item name="colorSecondary">@color/calm_yellow</item>
+        <item name="android:windowBackground">@color/light_navy</item>
     </style>
 
     <style name="Theme.Jawwy" parent="Base.Theme.Jawwy" />

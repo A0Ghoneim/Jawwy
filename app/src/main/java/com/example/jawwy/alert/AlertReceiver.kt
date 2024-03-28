@@ -51,13 +51,13 @@ class AlertReceiver:BroadcastReceiver(){
                viewModel.weatherobj.collectLatest { result ->
                    when (result) {
                        is WeatherApiState.Success -> {
-                           if (result.data.current==null){
+                           if (result.data.alerts[0].description==null){
                                Log.i("Alerts", "onReceive: No Alerts")
                                notificationManager.notify(10,createNotidication(context,"No Alerts","Enjoy a peaceful day").build())
                            }
                            else{
-                               Log.i("Alerts", "onReceive: "+ result.data.current?.temp)
-                               notificationManager.notify(10,createNotidication(context,"${result.data.timezone} Alerts","descrivtionnnnnn").build())
+                               Log.i("Alerts", "onReceive: "+ result.data.alerts[0].description)
+                               notificationManager.notify(10,createNotidication(context,"${result.data.alerts[0].event} Alerts","\"${result.data.alerts[0].description}").build())
 
 
                            }

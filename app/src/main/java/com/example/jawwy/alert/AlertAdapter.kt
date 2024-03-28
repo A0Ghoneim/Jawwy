@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
@@ -17,6 +18,8 @@ import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.favourites.viewholder.FavouriteViewModel
 import com.example.jawwy.model.data.JsonPojo
 import com.example.jawwy.model.db.Converters
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class AlertAdapter(private val viewModel: AlertViewModel, private var dataList: MutableList<AlertItem>) :
     RecyclerView.Adapter<AlertAdapter.MyViewHolder>() {
@@ -44,7 +47,7 @@ class AlertAdapter(private val viewModel: AlertViewModel, private var dataList: 
         }
         holder.cityTV.text=currentAlert.city
         holder.countryTV.text=currentAlert.country
-        holder.dateTV.text= currentAlert.time.format(Converters.formatter)
+        holder.dateTV.text= formatLocalDateTime(currentAlert.time)
     }
 
     override fun getItemCount(): Int {
@@ -59,18 +62,45 @@ class AlertAdapter(private val viewModel: AlertViewModel, private var dataList: 
     }
     fun popDeleteMenu(v:View,alertItem: AlertItem){
         // Create a PopupMenu and inflate the menu resource
-        val popupMenu = PopupMenu(context,v)
-        popupMenu.inflate(R.menu.delete_menu)
-        Toast.makeText(context, "hjkhjk", Toast.LENGTH_SHORT).show()
+//        val popupMenu = PopupMenu(context,v)
+//        popupMenu.inflate(R.menu.delete_menu)
+//        Toast.makeText(context, "hjkhjk", Toast.LENGTH_SHORT).show()
+//
+//        // Set up a listener for menu item clicks
+//        popupMenu.setOnMenuItemClickListener {
+//            viewModel.deleteAlert(alertItem)
+//            true
+//        }
+//
+//        // Show the PopupMenu
+//        popupMenu.show()
 
-        // Set up a listener for menu item clicks
-        popupMenu.setOnMenuItemClickListener {
+
+        val  inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.refresh_menu_item_action_layout, null);
+
+        val  start:CardView =view.findViewById(R.id.deleter)
+
+        val  mypopupWindow = PopupWindow (view, 400, 210, true);
+
+        start.setOnClickListener {
+            Toast.makeText(context, "action", Toast.LENGTH_SHORT).show()
             viewModel.deleteAlert(alertItem)
-            true
+            mypopupWindow.dismiss()
         }
 
-        // Show the PopupMenu
-        popupMenu.show()
+
+
+
+        /* mypopupWindow.contentView.setOnClickListener{
+             Toast.makeText(context, "dismisser", Toast.LENGTH_SHORT).show()
+
+         }*/
+
+
+        mypopupWindow.showAsDropDown(v,700,-100);
+
+        true
     }
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -79,4 +109,14 @@ class AlertAdapter(private val viewModel: AlertViewModel, private var dataList: 
         val countryTV : TextView = itemView.findViewById(R.id.country_name)
         val dateTV : TextView = itemView.findViewById(R.id.date)
     }
+    fun formatLocalDateTime(localDateTime: LocalDateTime): String {
+        val year = DateTimeFormatter.ofPattern("yyyy").format(localDateTime)
+        val month = DateTimeFormatter.ofPattern("MM").format(localDateTime)
+        val day = DateTimeFormatter.ofPattern("dd").format(localDateTime)
+        val hour = DateTimeFormatter.ofPattern("HH").format(localDateTime)
+        val minute = DateTimeFormatter.ofPattern("mm").format(localDateTime)
+
+        return "$year-$month-$day $hour:$minute"
+    }
+
 }

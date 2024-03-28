@@ -180,8 +180,10 @@ class AlertsActivity : AppCompatActivity(), datelistener, timelistener {
             val month = c.get(Calendar.MONTH)
             val day = c.get(Calendar.DAY_OF_MONTH)
 
+                val dtpicker = DatePickerDialog(requireContext(), this, year, month, day)
+            dtpicker.datePicker.minDate=System.currentTimeMillis() - 1000
             // Create a new instance of DatePickerDialog and return it.
-            return DatePickerDialog(requireContext(), this, year, month, day)
+            return dtpicker
 
         }
 

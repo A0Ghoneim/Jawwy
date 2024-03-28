@@ -12,21 +12,23 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fav_view"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
+        android:background="@color/navy"
         android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/city_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="76dp"
             android:gravity="center"
             android:singleLine="false"
-            android:text="TextView"
-            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="TextView" />
 
         <TextView
             android:id="@+id/country_name"
@@ -35,19 +37,27 @@
             android:layout_marginStart="8dp"
             android:gravity="center"
             android:singleLine="false"
-            android:text="TextView"
-            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/city_name"
             app:layout_constraintStart_toEndOf="@+id/city_name"
-            app:layout_constraintTop_toTopOf="@+id/city_name" />
+            app:layout_constraintTop_toTopOf="@+id/city_name"
+            tools:text="TextView" />
 
-        <TextView
-            android:id="@+id/degree"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="TextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/city_name" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.625"
+            app:srcCompat="@drawable/location_sign_svgrepo_com" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
