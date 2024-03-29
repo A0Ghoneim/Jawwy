@@ -3,12 +3,14 @@ package com.example.jawwy
 import android.Manifest
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.ColorFilter
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -67,6 +69,8 @@ const val FAHRENHEIT="°F"
 const val KELVIN="°K"
 const val METER="meter/s"
 const val MILE="mile/h"
+const val ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 777
+
 class MainActivity : AppCompatActivity() {
     lateinit var act: MainActivity
     lateinit var ctx: Context
@@ -106,6 +110,9 @@ class MainActivity : AppCompatActivity() {
                 100
             )
         }
+            //work manager
+       // requestPermission()
+
 
 
         act = this
@@ -322,8 +329,16 @@ class MainActivity : AppCompatActivity() {
         }
         val pressure = current.pressure ?: 0
         val humidity = current.humidity ?: 0
-        val windSpeed = current.windSpeed ?: 0.0
-        val d = current.temp ?: 0.0
+        var windSpeed = current.windSpeed ?: 0.0
+        if (speedUnit== MILE){
+            windSpeed = UnitConverter.meterPerSecondToMilesPerHour(windSpeed)
+        }
+        var d = current.temp ?: 0.0
+        if (symbol== CELSIUS){
+            d= UnitConverter.kelvinToCelsius(d)
+        }else if (symbol == FAHRENHEIT){
+            d= UnitConverter.kelvinToFahrenheit(d)
+        }
         val degree:Int = d.toInt()
         val state = current.weather[0].description ?:""
         val icon = current.weather[0].icon
@@ -398,4 +413,6 @@ class MainActivity : AppCompatActivity() {
 
         return "$weekday, $dayOfMonth $month"
     }
+
+
 }

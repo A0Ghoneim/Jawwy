@@ -54,6 +54,10 @@ class WeatherRepository(val weatherRemoteDataSource: IWeatherRemoteDataSource, v
         return weatherLocalDataSource.insertAlert(alertItem)
     }
 
+    override fun getNotificationSettings(): String {
+        return sharedPreferenceDatasource.getNotificationSettings()
+    }
+
     override fun getLocationSettings(): String {
         return sharedPreferenceDatasource.getLocationSettings()
     }
@@ -72,6 +76,10 @@ class WeatherRepository(val weatherRemoteDataSource: IWeatherRemoteDataSource, v
 
     override fun getLanguage(): String {
         return sharedPreferenceDatasource.getLanguage()
+    }
+
+    override fun putNotificationSettings(nkey: String) {
+        return sharedPreferenceDatasource.putNotificationSettings(nkey)
     }
 
     override fun putLocationSettings(key: String) {

@@ -30,13 +30,14 @@ interface IWeatherRepository {
 
     suspend fun insertAlert(alertItem: AlertItem):Long
 
-
+    fun getNotificationSettings():String
     fun getLocationSettings():String
     fun getLatitude():Double
     fun getLongitude():Double
     fun getUnit():String
     fun getLanguage():String
 
+    fun putNotificationSettings(nkey:String)
     fun putLocationSettings(key:String)
     fun putLatitude(lat:Double)
     fun putLongitude(long:Double)

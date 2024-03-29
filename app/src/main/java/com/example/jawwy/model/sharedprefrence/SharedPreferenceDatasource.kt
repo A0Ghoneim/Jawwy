@@ -28,6 +28,10 @@ class SharedPreferenceDatasource private constructor(val context: Context) :
         }
     }
 
+    override fun getNotificationSettings(): String {
+        return sharedPreference.getString("notification","notwindow")!!
+    }
+
     override fun getLocationSettings(): String {
         return sharedPreference.getString("location","GPS")!!
     }
@@ -46,6 +50,10 @@ class SharedPreferenceDatasource private constructor(val context: Context) :
 
     override fun getLanguage(): String {
         return sharedPreference.getString("language","en")!!
+    }
+
+    override fun putNotificationSettings(nkey: String) {
+        editor.putString("notification",nkey).apply()
     }
 
     override fun putLocationSettings(key: String) {

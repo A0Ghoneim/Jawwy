@@ -9,5 +9,14 @@
         <item name="android:windowBackground">@color/light_navy</item>
     </style>
 
+    <style name="AppTheme.MaterialDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/calm_yellow</item>
+
+        <item name="android:windowBackground">@color/navy</item>
+
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/calm_yellow</item>
+    </style>
+
     <style name="Theme.Jawwy" parent="Base.Theme.Jawwy" />
 </resources>

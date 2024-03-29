@@ -7,12 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.jawwy.R
-import com.example.jawwy.currentweather.viewmodel.CurrentWeatherVieModelFactory
+import com.example.jawwy.alert.viewmodel.MyDialogService
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.currentweather.viewmodel.WeatherApiState
 import com.example.jawwy.model.db.WeatherLocalDataSource
@@ -24,8 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
-import kotlin.math.log
 
 class AlertReceiver:BroadcastReceiver(){
 
@@ -41,6 +36,8 @@ class AlertReceiver:BroadcastReceiver(){
             SharedPreferenceDatasource.getInstance(context)
         ), context)
 
+        val notificationSettings = viewModel.getNotificationSettings()
+
         viewModel.fetchWeather()
 
         Log.i("TAG", "onReceive: Nooooooooooo")
@@ -51,23 +48,47 @@ class AlertReceiver:BroadcastReceiver(){
                viewModel.weatherobj.collectLatest { result ->
                    when (result) {
                        is WeatherApiState.Success -> {
-                           if (result.data.alerts[0].description==null){
+
+                           if (notificationSettings == "notwindow"){
+                               Log.i("Alerts", "onReceived suceess")
+                           // try {
+                           if (result.data.alerts == null) {
                                Log.i("Alerts", "onReceive: No Alerts")
-                               notificationManager.notify(10,createNotidication(context,"No Alerts","Enjoy a peaceful day").build())
+                               notificationManager.notify(
+                                   10,
+                                   createNotidication(
+                                       context,
+                                       "No Alerts",
+                                       "Enjoy a peaceful day"
+                                   ).build()
+                               )
+                           } else {
+                               Log.i("Alerts", "onReceive: alert")
+                               notificationManager.notify(
+                                   10,
+                                   createNotidication(
+                                       context,
+                                       "${result.data.alerts!![0].event} Alerts",
+                                       "\"${result.data.alerts!![0].description}"
+                                   ).build()
+                               )
                            }
-                           else{
-                               Log.i("Alerts", "onReceive: "+ result.data.alerts[0].description)
-                               notificationManager.notify(10,createNotidication(context,"${result.data.alerts[0].event} Alerts","\"${result.data.alerts[0].description}").build())
+                       }else{
+                               if (result.data.alerts == null) {
+                                   Log.i("Alerts", "onReceive: No Alerts windoww")
+                                   startTheAlertService(context,"No Alerts",
+                                       "Enjoy a peaceful day")
 
-
-                           }
-//                           Log.i(
-//                               "create",
-//                               "onCreate: Main " + result.data.id + " " + result.data.current?.dt + " " + result.data.lat + " " + result.data.lon + " " + result.data.current?.temp
-//                           )
+                               } else {
+                                   Log.i("Alerts", "onReceive: alert")
+                                   startTheAlertService(context,"${result.data.alerts!![0].event} Alerts",
+                                       "\"${result.data.alerts!![0].description}")
+                               }
+                       }
                        }
 
                        is WeatherApiState.Failure -> {
+                           Log.i("Alerts", "onReceive: Fail")
                            // binding.progressBar2.visibility = View.GONE
                        }
 
@@ -110,5 +131,29 @@ class AlertReceiver:BroadcastReceiver(){
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }}
+
+
+    fun startTheAlertService(context: Context,title:String,description:String){
+        val intent = Intent(context,MyDialogService::class.java)
+        intent.putExtra("title",title)
+        intent.putExtra("description",description)
+        // MyImageJobIntentService.myEnqueueWork(this,intent)
+        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU){
+            val notificationManager = context.getSystemService(NotificationManager::class.java)as NotificationManager
+            if (notificationManager.areNotificationsEnabled()){
+                context.startForegroundService(intent)
+            }
+//            else {
+//                ActivityCompat.requestPermissions(context, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+//                    100)
+//            }
+        }
+        else if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
+            context.startForegroundService(intent)
+        }
+        else{
+            context.startService(intent)
+        }
+    }
 
 }

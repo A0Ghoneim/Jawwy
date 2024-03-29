@@ -1,11 +1,17 @@
 package com.example.jawwy.settings.view
 
+import android.annotation.TargetApi
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
+import com.example.jawwy.ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE
 import com.example.jawwy.R
 import com.example.jawwy.databinding.ActivitySettingsBinding
 import com.example.jawwy.favourites.viewholder.FavouriteViewModel
@@ -86,6 +92,21 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
         }
+        binding.alertGroup.setOnCheckedChangeListener { group, checkedId ->
+            val key = "notification"
+            val value = findViewById<RadioButton>(checkedId).text.toString()
+            val res:String = when(value){
+                getString(R.string.notification) -> "notwindow"
+                getString(R.string.window) -> "window"
+                else -> {"notwindow"}
+            }
+            if (res == "window"){
+                requestPermission()
+            }
+            else {
+                viewModel.putNotificationSettings(res)
+            }
+        }
     }
 
     override fun onStart() {
@@ -109,6 +130,33 @@ class SettingsActivity : AppCompatActivity() {
             "standard" -> {
                 binding.metricRbtn.isChecked=true
                 binding.kelvinRbtn.isChecked=true
+            }
+        }
+        when(viewModel.getNotificationSettings()){
+            "notwindow" -> binding.notificationRbtn.isChecked=true
+            "window" -> binding.windoRbtn.isChecked=true
+        }
+    }
+    fun requestPermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
+                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE)
+                return true
+            }
+        }
+        return false
+    }
+    @TargetApi(Build.VERSION_CODES.M)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE) {
+            if (Settings.canDrawOverlays(this)) {
+                viewModel.putNotificationSettings("window")
             }
         }
     }

@@ -13,7 +13,10 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.jawwy.CELSIUS
+import com.example.jawwy.FAHRENHEIT
 import com.example.jawwy.R
+import com.example.jawwy.UnitConverter
 import com.example.jawwy.model.data.Daily
 import com.example.jawwy.model.data.Hourly
 import java.time.format.DateTimeFormatter
@@ -47,8 +50,15 @@ class DailyAdapter(var dataList:MutableList<Daily>, var symbol :String): Recycle
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentDaily: Daily = dataList[position]
-        val maxd = currentDaily.temp?.max ?: 0.0
-        val mind = currentDaily.temp?.min ?: 0.0
+        var maxd = currentDaily.temp?.max ?: 0.0
+        var mind = currentDaily.temp?.min ?: 0.0
+        if (symbol== CELSIUS){
+            maxd= UnitConverter.kelvinToCelsius(maxd)
+            mind= UnitConverter.kelvinToCelsius(mind)
+        }else if (symbol == FAHRENHEIT){
+            maxd= UnitConverter.kelvinToFahrenheit(maxd)
+            mind= UnitConverter.kelvinToFahrenheit(mind)
+        }
         val maxdegree:Int = maxd.toInt()
         val mindegree:Int = mind.toInt()
         val icon = currentDaily.weather[0].icon

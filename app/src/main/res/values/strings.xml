@@ -20,4 +20,6 @@
     <string name="pressure">Pressure</string>
     <string name="favourites">Favourites</string>
     <string name="alerts">Alerts</string>
+    <string name="notification">Notification</string>
+    <string name="window">Window</string>
 </resources>

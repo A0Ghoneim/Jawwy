@@ -13,7 +13,11 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.jawwy.CELSIUS
+import com.example.jawwy.FAHRENHEIT
+import com.example.jawwy.MILE
 import com.example.jawwy.R
+import com.example.jawwy.UnitConverter
 import com.example.jawwy.alert.AlertItem
 import com.example.jawwy.model.data.Hourly
 import java.util.Date
@@ -43,9 +47,17 @@ class HourAdapter(var dataList:MutableList<Hourly>, var symbol :String, var spee
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentHour:Hourly = dataList[position]
-        val d = currentHour.temp ?: 0.0
+        var d = currentHour.temp ?: 0.0
+        if (symbol== CELSIUS){
+            d= UnitConverter.kelvinToCelsius(d)
+        }else if (symbol == FAHRENHEIT){
+            d= UnitConverter.kelvinToFahrenheit(d)
+        }
         val degree:Int = d.toInt()
-        val wind = currentHour.windSpeed
+        var wind = currentHour.windSpeed ?: 0.0
+        if (speedUnit== MILE){
+            wind = UnitConverter.meterPerSecondToMilesPerHour(wind)
+        }
         val icon = currentHour.weather[0].icon
         val link = "https://openweathermap.org/img/wn/$icon@2x.png"
         var localHour = getLocalHourFromUnixTimestamp(currentHour.dt!!)

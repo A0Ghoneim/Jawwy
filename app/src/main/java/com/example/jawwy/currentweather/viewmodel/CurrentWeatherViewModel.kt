@@ -29,7 +29,7 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
         if (isOnline(context)) {
             getWeather(
                 lat, long,
-                repository.getUnit(),
+                "standard",
                 repository.getLanguage(),
                 isfromgps
             )
@@ -128,11 +128,18 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
         return false
     }
 
+    fun getNotificationSettings():String{
+        return repository.getNotificationSettings()
+    }
+
    fun getLocationSettings():String{
        return repository.getLocationSettings()
    }
     fun getUnit():String{
         return repository.getUnit()
+    }
+    fun putNotificationSettings(nkey:String){
+        repository.putNotificationSettings(nkey)
     }
     fun putLocationSettings(key:String){
         repository.putLocationSettings(key)

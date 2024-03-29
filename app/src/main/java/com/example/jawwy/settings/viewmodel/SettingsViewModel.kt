@@ -1,6 +1,13 @@
 package com.example.jawwy.settings.viewmodel
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.ViewModel
+import com.example.jawwy.ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE
 import com.example.jawwy.model.repo.IWeatherRepository
 
 class SettingsViewModel(private val repository: IWeatherRepository) : ViewModel() {
@@ -24,4 +31,26 @@ class SettingsViewModel(private val repository: IWeatherRepository) : ViewModel(
     fun putLocationSettings(key:String){
         repository.putLocationSettings(key)
     }
+    fun getNotificationSettings():String{
+        return repository.getNotificationSettings()
+    }
+
+    fun putNotificationSettings(nkey:String){
+        repository.putNotificationSettings(nkey)
+    }
+
+//    private  fun requestPermission(context: Context): Boolean {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (!Settings.canDrawOverlays(context)) {
+//                val mypkg = context.packageName
+//                val intent = Intent(
+//                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//                    Uri.parse("package:$mypkg")
+//                )
+//                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE)
+//                return true
+//            }
+//        }
+//        return false
+//    }
 }
