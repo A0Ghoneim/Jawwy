@@ -24,6 +24,7 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
     //var currpojo : JsonPojo
 
     fun fetchWeather(isfromgps:Boolean = false){
+        Log.i("TEST", "fetchWeather: ")
         val lat = repository.getLatitude()
         val long = repository.getLongitude()
         if (isOnline(context)) {
@@ -43,7 +44,7 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
             getSavedWeather(string)
         }
     }
-    fun Double.round(decimals: Int): Double {
+    private fun Double.round(decimals: Int): Double {
         var multiplier = 1.0
         repeat(decimals) { multiplier *= 10 }
         return kotlin.math.round(this * multiplier) / multiplier
@@ -63,8 +64,11 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
             }
             repository.getWeather(lat, long,units,language).collectLatest { data ->
                 if (data.isSuccessful){
-                    _weatherobj.value = WeatherApiState.Success(data.body()!!)
                     val mypojo = data.body() as JsonPojo
+                    val address=getAddress(mypojo.lat!!,mypojo.lon!!)
+                    mypojo.city=address.locality ?: ""
+                    mypojo.country=address.countryName ?: ""
+                    _weatherobj.value = WeatherApiState.Success(data.body()!!)
                     if (isfromgps){
                         mypojo.gps="yes"
                     }else{
@@ -79,15 +83,20 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
             }
         }
     }
-    fun getAddress(context: Context,lat:Double,long:Double): Address {
-//        val lat:Double = repository.getLatitude()
+    //        val lat:Double = repository.getLatitude()
 //        val long:Double = repository.getLongitude()
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses: List<Address>?
-        addresses = geocoder.getFromLocation(lat,long,1)
-        // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-        return addresses!![0]
+
+    fun getWeatherByLatLong(lat:Double,long:Double){
+        getWeather(lat = lat, long = long, isfromgps = false)
     }
+
+
+    private fun getAddress(lat:Double, long:Double): Address {
+    val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses: List<Address>? = geocoder.getFromLocation(lat,long,1)
+    return addresses!![0]
+}
+
 
     private fun getSavedWeather(id:String){
         viewModelScope.launch(Dispatchers.IO) {

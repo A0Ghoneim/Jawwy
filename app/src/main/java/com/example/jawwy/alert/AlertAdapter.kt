@@ -1,23 +1,16 @@
 package com.example.jawwy.alert
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.jawwy.MainActivity
 import com.example.jawwy.R
 import com.example.jawwy.alert.viewmodel.AlertViewModel
-import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
-import com.example.jawwy.favourites.viewholder.FavouriteViewModel
-import com.example.jawwy.model.data.JsonPojo
-import com.example.jawwy.model.db.Converters
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

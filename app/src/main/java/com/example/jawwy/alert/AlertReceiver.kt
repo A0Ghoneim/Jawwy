@@ -28,7 +28,8 @@ class AlertReceiver:BroadcastReceiver(){
 
         val notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val message:String = intent?.getStringExtra("MESSAGE") ?: return
+        val lat = intent?.getDoubleExtra("alertlat",0.0) ?: 0.0
+        val long = intent?.getDoubleExtra("alertlong",0.0) ?: 0.0
 
         val viewModel=CurrentWeatherViewModel(WeatherRepository(
             WeatherRemoteDataSource,
@@ -38,7 +39,7 @@ class AlertReceiver:BroadcastReceiver(){
 
         val notificationSettings = viewModel.getNotificationSettings()
 
-        viewModel.fetchWeather()
+        viewModel.getWeatherByLatLong(lat, long)
 
         Log.i("TAG", "onReceive: Nooooooooooo")
 

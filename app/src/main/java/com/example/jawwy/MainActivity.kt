@@ -89,6 +89,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Log.i("TEST", "onCreate: ")
 
         /////////////////UI/////////////////////////
             drawHourly(arrayListOf(), KELVIN, METER)
@@ -125,6 +126,7 @@ class MainActivity : AppCompatActivity() {
             ), ctx
         )
         viewModel = ViewModelProvider(this, factory).get(CurrentWeatherViewModel::class.java)
+
         //   sharedPref = act.getSharedPreferences("mypref",Context.MODE_PRIVATE)
 
 
@@ -176,6 +178,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        Log.i("TEST", "onStart: ")
 
         // val sharedPref = act?.getSharedPreferences("getString(R.string.preference_file_key)", Context.MODE_PRIVATE)
         val key = viewModel.getLocationSettings()
@@ -301,9 +304,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun drawCurrent(jsonPojo: JsonPojo,context: Context) {
-            val address = viewModel.getAddress(context,jsonPojo.lat!!,jsonPojo.lon!!)
-        val city:String = address.locality ?:""
-        val country:String = address.countryName ?:""
+        val city:String = jsonPojo.city
+        val country:String = jsonPojo.country
         val symbol = when(viewModel.getUnit()){
             "metric" -> CELSIUS
             "imperial" -> FAHRENHEIT

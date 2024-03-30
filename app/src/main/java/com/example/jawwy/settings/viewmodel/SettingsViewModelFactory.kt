@@ -2,7 +2,6 @@ package com.example.jawwy.settings.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.jawwy.favourites.viewholder.FavouriteViewModel
 import com.example.jawwy.model.repo.IWeatherRepository
 
 class SettingsViewModelFactory(private val repository: IWeatherRepository) : ViewModelProvider.Factory {

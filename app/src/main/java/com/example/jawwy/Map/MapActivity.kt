@@ -2,9 +2,7 @@ package com.example.jawwy.Map
 
 import android.annotation.SuppressLint
 import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.graphics.Rect
@@ -28,8 +26,6 @@ import com.example.jawwy.currentweather.viewmodel.CurrentWeatherVieModelFactory
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.databinding.ActivityMapBinding
 import com.example.jawwy.favourites.FavouritesActivity
-import com.example.jawwy.favourites.viewholder.FavouriteViewModel
-import com.example.jawwy.favourites.viewholder.FavouriteViewModelFactory
 import com.example.jawwy.model.db.WeatherLocalDataSource
 import com.example.jawwy.model.repo.WeatherRepository
 import com.example.jawwy.model.searchdata.Features
@@ -39,7 +35,6 @@ import com.example.jawwy.search.ViewModel.FeatureApiState
 import com.example.jawwy.search.ViewModel.SearchViewModel
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.osmdroid.api.IMapController

@@ -39,18 +39,4 @@ class SettingsViewModel(private val repository: IWeatherRepository) : ViewModel(
         repository.putNotificationSettings(nkey)
     }
 
-//    private  fun requestPermission(context: Context): Boolean {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (!Settings.canDrawOverlays(context)) {
-//                val mypkg = context.packageName
-//                val intent = Intent(
-//                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-//                    Uri.parse("package:$mypkg")
-//                )
-//                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE)
-//                return true
-//            }
-//        }
-//        return false
-//    }
 }

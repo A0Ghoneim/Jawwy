@@ -12,18 +12,16 @@ class AlertSchedulerImp(val context: Context):AlertScheduler {
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    override fun schedule(time: LocalDateTime) {
+    override fun schedule(item: AlertItem) {
         val intent = Intent(context,AlertReceiver::class.java)
-        intent.putExtra("MESSAGE","messenger")
-        Log.i("TAG", "schedule: "+time.toString()+"  "+time.atZone(ZoneId.systemDefault()).toEpochSecond()*1000)
-        Log.i("TAG", "schedule: "+time.toString()+"  "+LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()*1000)
-        Log.i("TAG", "schedule: "+time.toString()+"  "+(time.atZone(ZoneId.systemDefault()).toEpochSecond()*1000).minus(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()*1000))
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC,time.atZone(ZoneId.systemDefault()).toEpochSecond()*1000,
-            PendingIntent.getBroadcast(context,time.hashCode(),intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+        intent.putExtra("alertlat",item.lat)
+        intent.putExtra("alertlong",item.lon)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC,item.time.atZone(ZoneId.systemDefault()).toEpochSecond()*1000,
+            PendingIntent.getBroadcast(context,item.time.hashCode(),intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
     }
 
-    override fun cancel(time: LocalDateTime) {
-       alarmManager.cancel(PendingIntent.getBroadcast(context,time.hashCode(),
+    override fun cancel(item: AlertItem) {
+       alarmManager.cancel(PendingIntent.getBroadcast(context,item.time.hashCode(),
            Intent(context,AlertReceiver::class.java),PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
     }
 }

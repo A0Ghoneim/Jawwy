@@ -2,20 +2,18 @@ package com.example.jawwy.favourites
 
 import android.content.Context
 import android.content.Intent
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jawwy.MainActivity
 import com.example.jawwy.R
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
-import com.example.jawwy.favourites.viewholder.FavouriteViewModel
+import com.example.jawwy.favourites.viewmodel.FavouriteViewModel
 import com.example.jawwy.model.data.JsonPojo
 
 class FavouriteAdapter(private val viewModel: FavouriteViewModel,private val weatherViewModel: CurrentWeatherViewModel, private var dataList: MutableList<JsonPojo>) :
@@ -34,24 +32,8 @@ lateinit var context : Context
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenWeather = dataList[position]
-        val address = viewModel.getAddress(currenWeather,context)
         holder.cardView.setOnLongClickListener {
 
-            //meal=this.meal;
-            // Create a PopupMenu and inflate the menu resource
-        /*    val popupMenu = PopupMenu(context,it,Gravity.RIGHT)
-            popupMenu.inflate(R.menu.delete_menu)
-            popupMenu.setForceShowIcon(true)
-            Toast.makeText(context, "hjkhjk", Toast.LENGTH_SHORT).show()
-
-            // Set up a listener for menu item clicks
-            popupMenu.setOnMenuItemClickListener {
-                viewModel.deletefav(currenWeather)
-                true
-            }
-
-            // Show the PopupMenu
-            popupMenu.show()*/
 
             val  inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = inflater.inflate(R.layout.refresh_menu_item_action_layout, null);
@@ -66,15 +48,6 @@ lateinit var context : Context
                 mypopupWindow.dismiss()
             }
 
-
-
-
-           /* mypopupWindow.contentView.setOnClickListener{
-                Toast.makeText(context, "dismisser", Toast.LENGTH_SHORT).show()
-
-            }*/
-
-
             mypopupWindow.showAsDropDown(it,700,-100);
 
             true
@@ -86,15 +59,14 @@ lateinit var context : Context
             context.startActivity(Intent(context,MainActivity::class.java))
 
         }
-        holder.cityTV.text=address.locality
-        holder.countryTV.text=address.countryName
+        holder.cityTV.text=currenWeather.city
+        holder.countryTV.text=currenWeather.country
     }
 
     override fun getItemCount(): Int {
         return dataList.size
     }
 
-    // Method to update the list
     fun updateList(newList: List<JsonPojo>) {
         dataList.clear()
         dataList.addAll(newList)

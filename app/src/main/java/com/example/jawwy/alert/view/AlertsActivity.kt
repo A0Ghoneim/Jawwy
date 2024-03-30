@@ -15,7 +15,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.jawwy.R
 import com.example.jawwy.alert.AlertAdapter
 import com.example.jawwy.alert.AlertItem
 import com.example.jawwy.alert.AlertScheduler
@@ -24,11 +23,6 @@ import com.example.jawwy.alert.viewmodel.AlertApiState
 import com.example.jawwy.alert.viewmodel.AlertViewModel
 import com.example.jawwy.alert.viewmodel.AlertViewModelFactory
 import com.example.jawwy.databinding.ActivityAlertsBinding
-import com.example.jawwy.favourites.FavouriteAdapter
-import com.example.jawwy.favourites.FavouriteApiState
-import com.example.jawwy.favourites.viewholder.FavouriteViewModel
-import com.example.jawwy.favourites.viewholder.FavouriteViewModelFactory
-import com.example.jawwy.model.data.JsonPojo
 import com.example.jawwy.model.db.WeatherLocalDataSource
 import com.example.jawwy.model.repo.WeatherRepository
 import com.example.jawwy.model.sharedprefrence.SharedPreferenceDatasource
@@ -38,7 +32,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 class AlertsActivity : AppCompatActivity(), datelistener, timelistener {
     lateinit var date: LocalDateTime
@@ -137,11 +130,11 @@ class AlertsActivity : AppCompatActivity(), datelistener, timelistener {
         val address = viewModel.getAddress(this)
         val city:String = address.locality ?:""
         val country:String = address.countryName ?:""
-        val alert = AlertItem(LocalDateTime.of(y,m,d,hourOfDay,minute),city,country)
+        val alert = AlertItem(LocalDateTime.of(y,m,d,hourOfDay,minute),city,country,viewModel.getLat(),viewModel.getLong())
         viewModel.insertAlert(alert)
 
        // scheduler.schedule(LocalDateTime.now().plusSeconds(10))
-        scheduler.schedule(LocalDateTime.of(y,m,d,hourOfDay,minute))
+        scheduler.schedule(alert)
     }
 
     class TimePickerFragment(val timelistener: timelistener) : DialogFragment(),

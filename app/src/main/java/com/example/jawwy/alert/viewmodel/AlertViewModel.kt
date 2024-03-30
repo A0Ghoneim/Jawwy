@@ -55,4 +55,11 @@ class AlertViewModel(private val repository: IWeatherRepository):ViewModel() {
             }
         }
     }
+
+    fun getLat():Double{
+        return repository.getLatitude()
+    }
+    fun getLong():Double{
+        return repository.getLongitude()
+    }
 }

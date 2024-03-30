@@ -1,5 +1,6 @@
 package com.example.jawwy.model.repo
 
+import android.location.Address
 import com.example.jawwy.alert.AlertItem
 import com.example.jawwy.model.data.JsonPojo
 import com.example.jawwy.model.searchdata.SearchPojo
@@ -19,6 +20,7 @@ interface IWeatherRepository {
     suspend fun getAllAlerts(): Flow<List<AlertItem>>
 
     suspend fun getWeatherById(id: String): Flow<JsonPojo>
+
 
     suspend fun delete(w: JsonPojo):Int
 

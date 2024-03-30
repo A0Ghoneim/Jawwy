@@ -1,9 +1,7 @@
 package com.example.jawwy.settings.view
 
 import android.annotation.TargetApi
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -14,8 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.jawwy.ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE
 import com.example.jawwy.R
 import com.example.jawwy.databinding.ActivitySettingsBinding
-import com.example.jawwy.favourites.viewholder.FavouriteViewModel
-import com.example.jawwy.favourites.viewholder.FavouriteViewModelFactory
 import com.example.jawwy.model.db.WeatherLocalDataSource
 import com.example.jawwy.model.repo.WeatherRepository
 import com.example.jawwy.model.sharedprefrence.SharedPreferenceDatasource

@@ -8,4 +8,4 @@ import java.time.LocalDateTime
 
 @Entity
 @TypeConverters(Converters::class)
-data class AlertItem(@PrimaryKey val time:LocalDateTime, val city:String="", val country:String="")
+data class AlertItem(@PrimaryKey val time:LocalDateTime, val city:String="", val country:String="",val lat:Double=0.0,val lon:Double=0.0)

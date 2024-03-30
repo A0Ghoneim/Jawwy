@@ -20,6 +20,9 @@ data class JsonPojo (
     @SerializedName("hourly"          ) var hourly         : ArrayList<Hourly> = arrayListOf(),
     @SerializedName("daily"           ) var daily          : ArrayList<Daily>  = arrayListOf(),
     @SerializedName("alerts"          ) var alerts         : ArrayList<Alerts> = arrayListOf(),
-    @SerializedName("gps"             ) var gps            : String
+    @SerializedName("gps"             ) var gps            : String,
+    @SerializedName("city"             ) var city            : String="",
+    @SerializedName("country"             ) var country            : String=""
+
 
 )
