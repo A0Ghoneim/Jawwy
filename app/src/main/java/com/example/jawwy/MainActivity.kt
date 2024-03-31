@@ -8,8 +8,12 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.ColorFilter
+import android.location.Address
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +30,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginTop
 import androidx.core.view.setPadding
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,6 +65,8 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.format.TextStyle
+import java.util.Locale
 import kotlin.math.round
 
 
@@ -84,7 +91,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var hourlyAdapter:HourAdapter
     lateinit var dailyAdapter: DailyAdapter
 
-    // lateinit var sharedPref:SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -92,11 +98,15 @@ class MainActivity : AppCompatActivity() {
         Log.i("TEST", "onCreate: ")
 
         /////////////////UI/////////////////////////
-            drawHourly(arrayListOf(), KELVIN, METER)
-            drawDaily(arrayListOf(), KELVIN)
+
+
+        drawHourly(arrayListOf(), KELVIN, METER)
+        drawDaily(arrayListOf(), KELVIN)
+
 
         val anim =android.view.animation.AnimationUtils.loadAnimation(this,R.anim.popup_anim)
 
+        //viewModel.putLanguage(res)
 
         ////////////////UI//////////////////////////
 
@@ -111,23 +121,28 @@ class MainActivity : AppCompatActivity() {
                 100
             )
         }
-            //work manager
-       // requestPermission()
-
 
 
         act = this
         ctx = this
+//        factory = CurrentWeatherVieModelFactory(
+//            WeatherRepository(
+//                WeatherRemoteDataSource.getInstance(ctx),
+//                WeatherLocalDataSource.getInstance(ctx),
+//                SharedPreferenceDatasource.getInstance(applicationContext)
+//            ), NetworkConnectivityObserver(applicationContext)
+//        )
         factory = CurrentWeatherVieModelFactory(
             WeatherRepository(
-                WeatherRemoteDataSource,
+                WeatherRemoteDataSource.getInstance(ctx),
                 WeatherLocalDataSource.getInstance(ctx),
-                SharedPreferenceDatasource.getInstance(ctx)
+                SharedPreferenceDatasource.getInstance(applicationContext)
             ), ctx
         )
         viewModel = ViewModelProvider(this, factory).get(CurrentWeatherViewModel::class.java)
 
-        //   sharedPref = act.getSharedPreferences("mypref",Context.MODE_PRIVATE)
+
+
 
 
         Log.i("TAG", "onCreate: isfirst $gpsFlag")
@@ -137,9 +152,13 @@ class MainActivity : AppCompatActivity() {
                 when (result) {
                     is WeatherApiState.Success -> {
                         drawCurrent(result.data,this@MainActivity)
-                       binding.progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                         binding.dayBox.visibility = View.VISIBLE
+                        binding.sevenday.text=getString(R.string.seven_day_forecast)
                         binding.statisticsBox.visibility = View.VISIBLE
+                        binding.textViewPressure.text=getString(R.string.pressure)
+                        binding.textViewHumidity.text=getString(R.string.humidity)
+                        binding.textViewWindspeed.text=getString(R.string.wind_speed)
                         binding.pressureanimationView.startAnimation(anim)
                         binding.humidityanimationView.startAnimation(anim)
                         binding.windanimationView.startAnimation(anim)
@@ -154,7 +173,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     is WeatherApiState.Failure -> {
-                         binding.progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                     }
 
                     is WeatherApiState.Loading -> {
@@ -178,16 +197,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Log.i("TEST", "onStart: ")
 
         // val sharedPref = act?.getSharedPreferences("getString(R.string.preference_file_key)", Context.MODE_PRIVATE)
         val key = viewModel.getLocationSettings()
-
+        Log.i("ULTIMATE", "$key")
         if (key == "manual") {
             gpsFlag = false
             viewModel.fetchWeather()
         } else {
-            //viewModel.putkey("GPS")
             gpsFlag = true
         }
         if (gpsFlag) {
@@ -304,8 +321,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun drawCurrent(jsonPojo: JsonPojo,context: Context) {
-        val city:String = jsonPojo.city
-        val country:String = jsonPojo.country
+        val address = getAddress(this,jsonPojo.lat!!,jsonPojo.lon!!)
+        val city:String = address.locality ?:jsonPojo.city
+        val country:String = address.countryName?: jsonPojo.country
         val symbol = when(viewModel.getUnit()){
             "metric" -> CELSIUS
             "imperial" -> FAHRENHEIT
@@ -322,7 +340,7 @@ class MainActivity : AppCompatActivity() {
         when(jsonPojo.daily[0].weather[0].main){
             "Rain" -> {binding.animationView.setAnimation(R.raw.animationrainy)
                 binding.animationView.setPadding(0,-1000,0,0)
-                        binding.animationView.visibility = View.VISIBLE}
+                binding.animationView.visibility = View.VISIBLE}
             "Snow" -> {binding.animationView.setAnimation(R.raw.animationsnoww)
                 binding.animationView.setPadding(0,-2100,0,0)
                 binding.animationView.visibility = View.VISIBLE}
@@ -343,12 +361,17 @@ class MainActivity : AppCompatActivity() {
         }
         val degree:Int = d.toInt()
         val state = current.weather[0].description ?:""
+        Log.i("TEST", "drawCurrent: $state")
         val icon = current.weather[0].icon
         val link = "https://openweathermap.org/img/wn/$icon@2x.png"
-        binding.locationText.text="$city/$country"
+        if (city=="") {
+            binding.locationText.text = "$country"
+        }else {
+            binding.locationText.text = "$city/$country"
+        }
         binding.degreeText.text="$degree$symbol"
         binding.stateText.text="$state"
-        binding.dateTextView.text=getDateDetailsFromUnixTimestamp(current.dt!!)
+        binding.dateTextView.text=getDateDetailsFromUnixTimestamp(current.dt!!,getCurrentLocale(this))
         animateTextView(0,pressure,binding.pressureDigit)
         animateTextView(0,humidity,binding.humidityDigit)
         animateTextView(0.0,windSpeed,binding.windDigit)
@@ -376,6 +399,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun drawDaily(dailyList: MutableList<Daily>, symbol: String){
+        val currentLocale = getCurrentLocale(this)
+        Log.d("Locale", "draw daily: $currentLocale")
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation= LinearLayoutManager.VERTICAL
         binding.dayRecycler.layoutManager=linearLayoutManager
@@ -383,6 +408,8 @@ class MainActivity : AppCompatActivity() {
         binding.dayRecycler.adapter=dailyAdapter
     }
     fun updateDaily(dailyList: MutableList<Daily>, symbol: String){
+        val currentLocale = getCurrentLocale(this)
+        Log.d("Locale", "update daily: $currentLocale")
         dailyAdapter.updateList(dailyList,symbol)
     }
 
@@ -403,18 +430,51 @@ class MainActivity : AppCompatActivity() {
         }
         valueAnimator.start()
     }
-    fun getDateDetailsFromUnixTimestamp(unixTimestamp: Int): String {
-        val localDateTime = LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(unixTimestamp.toLong()),
-            ZoneId.systemDefault()
-        )
+    fun getDateDetailsFromUnixTimestamp(
+        unixTimestamp: Int,
+        locale: Locale
+    ): String {
+        val instant = Instant.ofEpochSecond(unixTimestamp.toLong())
+        val zoneId = ZoneId.systemDefault()
+        val localDateTime = LocalDateTime.ofInstant(instant, zoneId)
 
-        val weekday = localDateTime.dayOfWeek.toString() // Day of week (e.g., "MONDAY")
-        val dayOfMonth = localDateTime.dayOfMonth // Day of month (e.g., 25)
-        val month = localDateTime.month.toString() // Month (e.g., "MARCH")
+        val weekday = localDateTime.dayOfWeek.getDisplayName(TextStyle.FULL, locale)
+        val dayOfMonth = localDateTime.dayOfMonth
+        val month = localDateTime.month.getDisplayName(TextStyle.FULL, locale)
 
         return "$weekday, $dayOfMonth $month"
     }
 
+    private fun getCurrentLocale(context: Context): Locale {
+        val configuration = context.resources.configuration
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            configuration.locales.get(0)
+        } else {
+            configuration.locale
+        }
+    }
+    private fun changeLocale(context: Context, languageCode: String, countryCode: String) {
+        val locale = Locale(languageCode, countryCode)
+        Locale.setDefault(locale)
+
+        val resources: Resources = context.resources
+        val configuration: Configuration = resources.configuration
+        configuration.setLocale(locale)
+
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+
+        // Logging the locale change
+        Log.d("Locale", "Locale changed to: $languageCode-$countryCode")
+
+        // Optionally, you might want to restart your activity to reflect the changes
+        // You can do so by recreating the activity
+    }
+    fun getAddress(context: Context,lat:Double,long:Double): Address {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses: List<Address>?
+        addresses = geocoder.getFromLocation(lat,long,1)
+        // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        return addresses!![0]
+    }
 
 }

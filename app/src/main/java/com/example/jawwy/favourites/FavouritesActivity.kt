@@ -32,7 +32,7 @@ class FavouritesActivity : AppCompatActivity() {
         setContentView(binding.root)
         factory = FavouriteViewModelFactory(
             WeatherRepository(
-                WeatherRemoteDataSource,
+                WeatherRemoteDataSource.getInstance(this),
                 WeatherLocalDataSource.getInstance(this),
                 SharedPreferenceDatasource.getInstance(this)
             )
@@ -42,7 +42,7 @@ class FavouritesActivity : AppCompatActivity() {
 
         val wfactory = CurrentWeatherVieModelFactory(
             WeatherRepository(
-                WeatherRemoteDataSource,
+                WeatherRemoteDataSource.getInstance(this),
                 WeatherLocalDataSource.getInstance(this),
                 SharedPreferenceDatasource.getInstance(this)
             ), this

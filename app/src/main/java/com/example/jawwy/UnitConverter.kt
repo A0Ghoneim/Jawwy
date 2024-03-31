@@ -11,6 +11,11 @@ object UnitConverter {
 
     fun meterPerSecondToMilesPerHour(mps: Double): Double {
         val mph = mps * 2.23694
-        return "%.2f".format(mph).toDouble()
+        return mph.round(2)
+    }
+    private fun Double.round(decimals: Int): Double {
+        var multiplier = 1.0
+        repeat(decimals) { multiplier *= 10 }
+        return kotlin.math.round(this * multiplier) / multiplier
     }
 }

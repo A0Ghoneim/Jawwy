@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">جوي</string>
+    <string name="title_activity_trial">نشاط التجربة</string>
+    <string name="location">الموقع</string>
+    <string name="unit">وحدة</string>
+    <string name="auto">تلقائي</string>
+    <string name="manual">يدوي</string>
+    <string name="kelvin">كلفن</string>
+    <string name="celsius">درجة مئوية</string>
+    <string name="fahrenheit">فهرنهايت</string>
+    <string name="language">اللغة</string>
+    <string name="english">الإنجليزية</string>
+    <string name="today">اليوم</string>
+    <string name="tomorrow">الغد</string>
+    <string name="arabic">العربية</string>
+    <string name="tunit">درجة الحرارة</string>
+    <string name="wunit">سرعة الرياح</string>
+    <string name="meter_second">متر / ثانية</string>
+    <string name="mile_hour">ميل / ساعة</string>
+    <string name="location_switch">تحديد الموقع        </string>
+    <string name="seven_day_forecast">توقعات لمدة 7 أيام</string>
+    <string name="pressure">الضغط</string>
+    <string name="favourites">المفضلة</string>
+    <string name="alerts">التنبيهات</string>
+    <string name="notification">الإشعار</string>
+    <string name="window">نافذة</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="wind_speed">سرعة الرياح</string>
+    <string name="delete">حذف</string>
+</resources>

@@ -29,7 +29,7 @@ class SettingsActivity : AppCompatActivity() {
         val act = this
         val factory = SettingsViewModelFactory(
             WeatherRepository(
-                WeatherRemoteDataSource,
+                WeatherRemoteDataSource.getInstance(this),
                 WeatherLocalDataSource.getInstance(this),
                 SharedPreferenceDatasource.getInstance(this)
             )

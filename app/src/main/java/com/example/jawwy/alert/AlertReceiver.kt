@@ -32,7 +32,7 @@ class AlertReceiver:BroadcastReceiver(){
         val long = intent?.getDoubleExtra("alertlong",0.0) ?: 0.0
 
         val viewModel=CurrentWeatherViewModel(WeatherRepository(
-            WeatherRemoteDataSource,
+            WeatherRemoteDataSource.getInstance(context),
             WeatherLocalDataSource.getInstance(context!!),
             SharedPreferenceDatasource.getInstance(context)
         ), context)

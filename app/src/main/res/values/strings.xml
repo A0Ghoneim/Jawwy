@@ -10,6 +10,8 @@
     <string name="fahrenheit">Fahrenheit</string>
     <string name="language">Language</string>
     <string name="english">English</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
     <string name="arabic">Arabic</string>
     <string name="tunit">Temperature</string>
     <string name="wunit">Wind Speed</string>
@@ -22,4 +24,7 @@
     <string name="alerts">Alerts</string>
     <string name="notification">Notification</string>
     <string name="window">Window</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="delete">Delete</string>
 </resources>

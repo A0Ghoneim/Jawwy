@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_marginTop="16dp"
-                        android:text="@string/seven_day_forecast"
+                        android:text="@string/favourites"
                         android:textColor="@color/white"
                         android:textSize="20sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -166,7 +166,7 @@
                         app:lottie_speed="0.5" />
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/textView_pressure"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -175,7 +175,6 @@
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="@+id/pressureanimationView"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="@+id/pressureanimationView"
                         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -202,11 +201,11 @@
                         app:layout_constraintTop_toBottomOf="@+id/humidity_digit" />
 
                     <TextView
-                        android:id="@+id/textView10"
+                        android:id="@+id/textView_humidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Humidity"
+                        android:text="@string/humidity"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -227,11 +226,11 @@
                         tools:text="20.14" />
 
                     <TextView
-                        android:id="@+id/textView15"
+                        android:id="@+id/textView_windspeed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Wind Speed"
+                        android:text="@string/wind_speed"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold"

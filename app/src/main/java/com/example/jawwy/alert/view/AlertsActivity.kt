@@ -50,7 +50,7 @@ class AlertsActivity : AppCompatActivity(), datelistener, timelistener {
 
         val factory = AlertViewModelFactory(
             WeatherRepository(
-                WeatherRemoteDataSource,
+                WeatherRemoteDataSource.getInstance(this),
                 WeatherLocalDataSource.getInstance(this),
                 SharedPreferenceDatasource.getInstance(this)
             )

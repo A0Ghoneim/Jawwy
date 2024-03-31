@@ -73,11 +73,11 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
         val binding = ActivityMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel = SearchViewModel(WeatherRepository(WeatherRemoteDataSource,WeatherLocalDataSource.getInstance(this),SharedPreferenceDatasource.getInstance(this)))
+        val viewModel = SearchViewModel(WeatherRepository(WeatherRemoteDataSource.getInstance(this),WeatherLocalDataSource.getInstance(this),SharedPreferenceDatasource.getInstance(this)))
 
         val factory = CurrentWeatherVieModelFactory(
             WeatherRepository(
-                WeatherRemoteDataSource,
+                WeatherRemoteDataSource.getInstance(this),
                 WeatherLocalDataSource.getInstance(this),
                 SharedPreferenceDatasource.getInstance(this)
             ), this
