@@ -21,6 +21,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.jawwy.MainActivity
 import com.example.jawwy.R
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherVieModelFactory
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
@@ -75,6 +76,13 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
 
         val viewModel = SearchViewModel(WeatherRepository(WeatherRemoteDataSource.getInstance(this),WeatherLocalDataSource.getInstance(this),SharedPreferenceDatasource.getInstance(this)))
 
+//        val factory = CurrentWeatherVieModelFactory(
+//            WeatherRepository(
+//                WeatherRemoteDataSource.getInstance(this),
+//                WeatherLocalDataSource.getInstance(this),
+//                SharedPreferenceDatasource.getInstance(this)
+//            ), NetworkConnectivityObserver(applicationContext)
+//        )
         val factory = CurrentWeatherVieModelFactory(
             WeatherRepository(
                 WeatherRemoteDataSource.getInstance(this),
@@ -151,13 +159,13 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
                 val cursor = binding.searchView.suggestionsAdapter.getItem(position) as Cursor
                 val term = cursor.getInt(cursor.getColumnIndex(BaseColumns._ID))
                 Log.d("TAG", "onSuggestionSelect: "+term)
-                    cursor.close()
-                    val  feature = searchList[term]
-                      val coordinates =   feature.geometry?.coordinates
+                cursor.close()
+                val  feature = searchList[term]
+                val coordinates =   feature.geometry?.coordinates
                 Log.d("TAG", "onSuggestionSelect: "+coordinates?.get(0) + coordinates?.get(1))
-                        val p = GeoPoint(coordinates?.get(1)!!,coordinates?.get(0)!!)
+                val p = GeoPoint(coordinates?.get(1)!!,coordinates?.get(0)!!)
                 hoverTo(p)
-                        return true
+                return true
             }
 
             override fun onSuggestionClick(position: Int): Boolean {
@@ -175,12 +183,13 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
         geocoder = Geocoder(this, Locale.getDefault())
         mMap = binding.osmmap
         marker =  Marker(mMap)
+        // marker.icon=getDrawable(R.drawable.locationfill)
         mMap.setTileSource(TileSourceFactory.MAPNIK)
         mMap.mapCenter
         mMap.setMultiTouchControls(true)
         mMap.getLocalVisibleRect(Rect())
 
-         act = this
+        act = this
 
         mMyLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(this), mMap)
         controller = mMap.controller
@@ -236,7 +245,7 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
 
         hoverTo(p)
 
-      return true
+        return true
     }
     override fun longPressHelper(p: GeoPoint?): Boolean {
         return true
@@ -292,9 +301,9 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
                 weatherViewModel.putLong(p.longitude)
                 weatherViewModel.putLocationSettings("manual")
 
-                    weatherViewModel.fetchWeather()
+                weatherViewModel.fetchWeather()
 
-                startActivity(Intent(this,FavouritesActivity::class.java))
+                startActivity(Intent(this,MainActivity::class.java))
                 finish()
 
             }
@@ -303,16 +312,4 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
 
 
     }
-//    fun putDouble(edit: SharedPreferences.Editor, key: String?, value: Double): SharedPreferences.Editor? {
-//        return edit.putLong(key, java.lang.Double.doubleToRawLongBits(value))
-//    }
-//
-//    fun getDouble(prefs: SharedPreferences, key: String?, defaultValue: Double): Double {
-//        return java.lang.Double.longBitsToDouble(
-//            prefs.getLong(
-//                key,
-//                java.lang.Double.doubleToLongBits(defaultValue)
-//            )
-//        )
-//    }
 }
