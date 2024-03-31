@@ -50,6 +50,7 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
         return kotlin.math.round(this * multiplier) / multiplier
     }
 
+
     private fun getWeather(
         lat: Double,
         long: Double,
@@ -91,11 +92,9 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
     }
 
 
-    private fun getAddress(lat:Double, long:Double): Address {
-    val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses: List<Address>? = geocoder.getFromLocation(lat,long,1)
-    return addresses!![0]
-}
+    private suspend fun getAddress(lat:Double, long:Double): Address {
+        return repository.getAddress(lat, long)
+    }
 
 
     private fun getSavedWeather(id:String){

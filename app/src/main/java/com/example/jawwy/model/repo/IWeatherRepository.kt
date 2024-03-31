@@ -14,6 +14,8 @@ interface IWeatherRepository {
         units: String="metric",
         language: String ="en"
     ): Flow<Response<JsonPojo>>
+    suspend fun getAddress(lat: Double,long: Double):Address
+
 
     fun search(place :String,limit : Int):Flow<Response<SearchPojo>>
     suspend fun getAllWeather(): Flow<List<JsonPojo>>

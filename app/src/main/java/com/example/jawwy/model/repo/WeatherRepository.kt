@@ -22,7 +22,9 @@ class WeatherRepository(val weatherRemoteDataSource: IWeatherRemoteDataSource, v
     override fun search(place: String,limit : Int): Flow<Response<SearchPojo>> {
         return weatherRemoteDataSource.makeSearchCall(place,limit)
     }
-
+    override suspend fun getAddress(lat: Double, long: Double): Address {
+        return weatherRemoteDataSource.makeAddressCall(lat, long)
+    }
     override suspend fun getAllWeather(): Flow<List<JsonPojo>> {
         return weatherLocalDataSource.getAllWeather()
     }
