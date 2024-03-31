@@ -158,4 +158,7 @@ class CurrentWeatherViewModel(private val repository: IWeatherRepository,val con
     fun putLong(long:Double){
         repository.putLongitude(long)
     }
+    fun getLanguage():String{
+        return repository.getLanguage()
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.jawwy.Favourites
 
+import android.location.Address
 import com.example.jawwy.alert.AlertItem
 import com.example.jawwy.model.data.JsonPojo
 import com.example.jawwy.model.repo.IWeatherRepository
@@ -11,12 +12,20 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
 class FakeRepository : IWeatherRepository {
+
+    var location:String = "GPS"
+    var myunit:String ="standard"
+    var mylanguage ="en"
     override fun getWeather(
         lat: Double,
         long: Double,
         units: String,
         language: String
     ): Flow<Response<JsonPojo>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAddress(lat: Double, long: Double): Address {
         TODO("Not yet implemented")
     }
 
@@ -61,7 +70,7 @@ class FakeRepository : IWeatherRepository {
     }
 
     override fun getLocationSettings(): String {
-        TODO("Not yet implemented")
+        return location
     }
 
     override fun getLatitude(): Double {
@@ -73,11 +82,11 @@ class FakeRepository : IWeatherRepository {
     }
 
     override fun getUnit(): String {
-        TODO("Not yet implemented")
+        return myunit
     }
 
     override fun getLanguage(): String {
-        TODO("Not yet implemented")
+        return mylanguage
     }
 
     override fun putNotificationSettings(nkey: String) {
@@ -85,7 +94,7 @@ class FakeRepository : IWeatherRepository {
     }
 
     override fun putLocationSettings(key: String) {
-        TODO("Not yet implemented")
+        location=key
     }
 
     override fun putLatitude(lat: Double) {
@@ -97,11 +106,11 @@ class FakeRepository : IWeatherRepository {
     }
 
     override fun putUnit(unit: String) {
-        TODO("Not yet implemented")
+        myunit=unit
     }
 
     override fun putLanguage(language: String) {
-        TODO("Not yet implemented")
+        mylanguage=language
     }
 
 }

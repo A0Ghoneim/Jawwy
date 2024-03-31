@@ -199,6 +199,12 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         // val sharedPref = act?.getSharedPreferences("getString(R.string.preference_file_key)", Context.MODE_PRIVATE)
+
+        when(viewModel.getLanguage()){
+            "ar" -> changeLocale(this,"ar","EG")
+            "en" -> changeLocale(this,"en","US")
+        }
+
         val key = viewModel.getLocationSettings()
         Log.i("ULTIMATE", "$key")
         if (key == "manual") {

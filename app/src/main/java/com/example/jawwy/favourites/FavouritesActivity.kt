@@ -2,6 +2,8 @@ package com.example.jawwy.favourites
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.jawwy.Map.MapActivity
+import com.example.jawwy.connectivity.ConnectivityObserver
+import com.example.jawwy.connectivity.NetworkConnectivityObserver
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherVieModelFactory
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.databinding.ActivityFavouritesBinding
@@ -34,13 +38,18 @@ class FavouritesActivity : AppCompatActivity() {
     lateinit var viewModel: FavouriteViewModel
     lateinit var weatherViewMode: CurrentWeatherViewModel
     lateinit var favList: MutableList<JsonPojo>
-   // lateinit var connectivityObserver: ConnectivityObserver
+    lateinit var connectivityObserver: ConnectivityObserver
     lateinit var adapter: FavouriteAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFavouritesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-    /*    connectivityObserver = NetworkConnectivityObserver(applicationContext)
+//        if (isOnline(this)){
+//            binding.floatingActionButton.visibility = View.VISIBLE
+//        } else {
+//            binding.floatingActionButton.visibility = View.GONE
+//        }
+        connectivityObserver = NetworkConnectivityObserver(applicationContext)
         connectivityObserver.getCurrentStatus().let {
             if (it == ConnectivityObserver.Status.Available) {
                 binding.floatingActionButton.visibility = View.VISIBLE
@@ -56,7 +65,8 @@ class FavouritesActivity : AppCompatActivity() {
                     binding.floatingActionButton.visibility = View.GONE
                 }
             }
-        }*/
+        }
+
 
 
         factory = FavouriteViewModelFactory(
@@ -117,8 +127,12 @@ class FavouritesActivity : AppCompatActivity() {
         }
 
         binding.floatingActionButton.setOnClickListener {
-            startActivity(Intent(this, MapActivity::class.java))
-            finish()
+//            if (isOnline(this)) {
+//                startActivity(Intent(this, MapActivity::class.java))
+//                finish()
+//            }else{
+//                recreate()
+//            }
         }
     }
     private fun getCurrentLocale(context: Context): Locale {
@@ -134,4 +148,24 @@ class FavouritesActivity : AppCompatActivity() {
         super.onResume()
         viewModel.getAllWeather()
     }
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+        return false
+    }
+
 }
