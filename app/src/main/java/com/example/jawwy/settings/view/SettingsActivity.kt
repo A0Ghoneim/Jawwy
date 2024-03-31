@@ -1,15 +1,20 @@
 package com.example.jawwy.settings.view
 
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
 import com.example.jawwy.ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE
+import com.example.jawwy.MainActivity
 import com.example.jawwy.R
 import com.example.jawwy.databinding.ActivitySettingsBinding
 import com.example.jawwy.model.db.WeatherLocalDataSource
@@ -18,6 +23,8 @@ import com.example.jawwy.model.sharedprefrence.SharedPreferenceDatasource
 import com.example.jawwy.network.WeatherRemoteDataSource
 import com.example.jawwy.settings.viewmodel.SettingsViewModel
 import com.example.jawwy.settings.viewmodel.SettingsViewModelFactory
+import kotlinx.coroutines.joinAll
+import java.util.Locale
 
 class SettingsActivity : AppCompatActivity() {
     lateinit var binding:ActivitySettingsBinding
@@ -26,16 +33,16 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         val act = this
         val factory = SettingsViewModelFactory(
             WeatherRepository(
                 WeatherRemoteDataSource.getInstance(this),
                 WeatherLocalDataSource.getInstance(this),
-                SharedPreferenceDatasource.getInstance(this)
+                SharedPreferenceDatasource.getInstance(applicationContext)
             )
         )
-         viewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
-
+        viewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
 
         binding.materialSwitch.setOnCheckedChangeListener { _, isChecked ->
             val key = "location"
@@ -53,9 +60,16 @@ class SettingsActivity : AppCompatActivity() {
             val res:String = when(value){
                 getString(R.string.arabic) -> "ar"
                 getString(R.string.english) -> "en"
-                else -> {"en"}
+                else -> {"ar"}
             }
-            viewModel.putLanguage(res)
+
+            if (viewModel.getLanguage()!=res){
+                viewModel.putLanguage(res)
+                    finish()
+            }
+
+            // recreate()
+
         }
         binding.temperatureGroup.setOnCheckedChangeListener { group, checkedId ->
             val key = "temperature"
@@ -114,6 +128,7 @@ class SettingsActivity : AppCompatActivity() {
             "en" -> binding.englishRbtn.isChecked=true
             "ar" -> binding.arabicRbtn.isChecked=true
         }
+
         when(viewModel.getUnit()){
             "metric" -> {
                 binding.metricRbtn.isChecked=true
@@ -134,19 +149,16 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
     fun requestPermission(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:$packageName")
-                )
-                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE)
-                return true
-            }
+        if (!Settings.canDrawOverlays(this)) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
+            startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE)
+            return true
         }
         return false
     }
-    @TargetApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -156,4 +168,9 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
     }
+    private fun getCurrentLocale(context: Context): Locale {
+        val configuration = context.resources.configuration
+        return configuration.locales.get(0)
+    }
+
 }

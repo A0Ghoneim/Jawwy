@@ -22,7 +22,7 @@ class SettingsViewModel(private val repository: IWeatherRepository) : ViewModel(
         return repository.getLanguage()
     }
     fun putLanguage(language: String){
-        repository.putLanguage(language)
+        return repository.putLanguage(language)
     }
     fun getLocationSettings():String{
         return repository.getLocationSettings()
