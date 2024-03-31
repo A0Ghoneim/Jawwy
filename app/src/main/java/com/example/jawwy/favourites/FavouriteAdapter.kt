@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.jawwy.MainActivity
+import com.example.jawwy.currentweather.view.MainActivity
 import com.example.jawwy.R
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.favourites.viewmodel.FavouriteViewModel
@@ -43,7 +43,7 @@ class FavouriteAdapter(private val viewModel: FavouriteViewModel,private val wea
             val  mypopupWindow =PopupWindow (view, 400, 210, true);
 
             start.setOnClickListener {
-                Toast.makeText(context, "action", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Location deleted", Toast.LENGTH_SHORT).show()
                 viewModel.deletefav(currenWeather)
                 mypopupWindow.dismiss()
             }
@@ -56,7 +56,7 @@ class FavouriteAdapter(private val viewModel: FavouriteViewModel,private val wea
             weatherViewModel.putlat(currenWeather.lat!!)
             weatherViewModel.putLong(currenWeather.lon!!)
             weatherViewModel.putLocationSettings("manual")
-            context.startActivity(Intent(context,MainActivity::class.java))
+            context.startActivity(Intent(context, MainActivity::class.java))
 
         }
         holder.cityTV.text=currenWeather.city

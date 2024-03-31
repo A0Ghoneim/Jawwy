@@ -1,31 +1,24 @@
 package com.example.jawwy.mainadapters
 
 import android.content.Context
-import android.icu.text.SimpleDateFormat
-import android.icu.util.TimeZone
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.jawwy.CELSIUS
-import com.example.jawwy.FAHRENHEIT
+import com.example.jawwy.currentweather.view.CELSIUS
+import com.example.jawwy.currentweather.view.FAHRENHEIT
 import com.example.jawwy.R
 import com.example.jawwy.UnitConverter
 import com.example.jawwy.model.data.Daily
-import com.example.jawwy.model.data.Hourly
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.*
 
 class DailyAdapter(var dataList:MutableList<Daily>, var symbol :String): RecyclerView.Adapter<DailyAdapter.MyViewHolder>() {
     lateinit var context : Context

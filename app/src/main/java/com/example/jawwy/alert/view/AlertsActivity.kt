@@ -10,7 +10,6 @@ import android.text.format.DateFormat
 import android.util.Log
 import android.widget.DatePicker
 import android.widget.TimePicker
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -40,6 +39,7 @@ class AlertsActivity : AppCompatActivity(), datelistener, timelistener {
     lateinit var viewModel: AlertViewModel
     lateinit var binding:ActivityAlertsBinding
     lateinit var alertList:MutableList<AlertItem>
+    lateinit var myadapter:AlertAdapter
     var y = 0
     var m = 0
     var d = 0
@@ -75,7 +75,7 @@ class AlertsActivity : AppCompatActivity(), datelistener, timelistener {
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation= LinearLayoutManager.VERTICAL
         binding.alertRecycler.layoutManager=linearLayoutManager
-        val myadapter= AlertAdapter(viewModel,alertList)
+         myadapter= AlertAdapter(viewModel,scheduler,alertList)
         binding.alertRecycler.adapter=myadapter
 
         lifecycleScope.launch {
@@ -124,8 +124,6 @@ class AlertsActivity : AppCompatActivity(), datelistener, timelistener {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         date = LocalDateTime.of(y, m, d, hourOfDay, minute)
         Log.i("TAG", "onDateSet: " + date.format(formatter))
-        Toast.makeText(this@AlertsActivity, "" + date.format(formatter), Toast.LENGTH_SHORT).show()
-
         // add Ad
         val address = viewModel.getAddress(this)
         val city:String = address.locality ?:""
@@ -186,5 +184,10 @@ class AlertsActivity : AppCompatActivity(), datelistener, timelistener {
         }
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllAlerts()
+    }
 
 }

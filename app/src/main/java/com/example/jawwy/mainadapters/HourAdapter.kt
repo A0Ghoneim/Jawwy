@@ -13,12 +13,11 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.jawwy.CELSIUS
-import com.example.jawwy.FAHRENHEIT
-import com.example.jawwy.MILE
+import com.example.jawwy.currentweather.view.CELSIUS
+import com.example.jawwy.currentweather.view.FAHRENHEIT
+import com.example.jawwy.currentweather.view.MILE
 import com.example.jawwy.R
 import com.example.jawwy.UnitConverter
-import com.example.jawwy.alert.AlertItem
 import com.example.jawwy.model.data.Hourly
 import java.util.Date
 import java.util.Locale

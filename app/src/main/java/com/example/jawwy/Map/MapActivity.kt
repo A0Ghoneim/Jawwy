@@ -21,12 +21,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.jawwy.MainActivity
+import com.example.jawwy.currentweather.view.MainActivity
 import com.example.jawwy.R
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherVieModelFactory
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
 import com.example.jawwy.databinding.ActivityMapBinding
-import com.example.jawwy.favourites.FavouritesActivity
 import com.example.jawwy.model.db.WeatherLocalDataSource
 import com.example.jawwy.model.repo.WeatherRepository
 import com.example.jawwy.model.searchdata.Features
@@ -303,7 +302,7 @@ class MapActivity : AppCompatActivity(), MapListener,MapEventsReceiver, GpsStatu
 
                 weatherViewModel.fetchWeather()
 
-                startActivity(Intent(this,MainActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
 
             }

@@ -14,7 +14,7 @@ import com.example.jawwy.alert.viewmodel.AlertViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class AlertAdapter(private val viewModel: AlertViewModel, private var dataList: MutableList<AlertItem>) :
+class AlertAdapter(private val viewModel: AlertViewModel,private val alertScheduler: AlertScheduler, private var dataList: MutableList<AlertItem>) :
     RecyclerView.Adapter<AlertAdapter.MyViewHolder>() {
     lateinit var context : Context
 
@@ -77,8 +77,10 @@ class AlertAdapter(private val viewModel: AlertViewModel, private var dataList: 
         val  mypopupWindow = PopupWindow (view, 400, 210, true);
 
         start.setOnClickListener {
-            Toast.makeText(context, "action", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Alert canceled", Toast.LENGTH_SHORT).show()
+            alertScheduler.cancel(alertItem)
             viewModel.deleteAlert(alertItem)
+
             mypopupWindow.dismiss()
         }
 

@@ -1,20 +1,14 @@
 package com.example.jawwy.settings.view
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.widget.RadioButton
 import androidx.lifecycle.ViewModelProvider
-import com.example.jawwy.ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE
-import com.example.jawwy.MainActivity
+import com.example.jawwy.currentweather.view.ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE
 import com.example.jawwy.R
 import com.example.jawwy.databinding.ActivitySettingsBinding
 import com.example.jawwy.model.db.WeatherLocalDataSource
@@ -23,7 +17,6 @@ import com.example.jawwy.model.sharedprefrence.SharedPreferenceDatasource
 import com.example.jawwy.network.WeatherRemoteDataSource
 import com.example.jawwy.settings.viewmodel.SettingsViewModel
 import com.example.jawwy.settings.viewmodel.SettingsViewModelFactory
-import kotlinx.coroutines.joinAll
 import java.util.Locale
 
 class SettingsActivity : AppCompatActivity() {

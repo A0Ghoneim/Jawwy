@@ -1,20 +1,16 @@
-package com.example.jawwy
+package com.example.jawwy.currentweather.view
 
 import android.Manifest
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.ColorFilter
 import android.location.Address
 import android.location.Geocoder
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -22,20 +18,18 @@ import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.view.animation.AlphaAnimation
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginTop
 import androidx.core.view.setPadding
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.jawwy.R
+import com.example.jawwy.UnitConverter
 import com.example.jawwy.alert.view.AlertsActivity
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherVieModelFactory
 import com.example.jawwy.currentweather.viewmodel.CurrentWeatherViewModel
@@ -59,7 +53,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.material.animation.AnimationUtils
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -104,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         drawDaily(arrayListOf(), KELVIN)
 
 
-        val anim =android.view.animation.AnimationUtils.loadAnimation(this,R.anim.popup_anim)
+        val anim =android.view.animation.AnimationUtils.loadAnimation(this, R.anim.popup_anim)
 
         //viewModel.putLanguage(res)
 
@@ -285,7 +278,6 @@ class MainActivity : AppCompatActivity() {
                     lat = locationResult.lastLocation!!.latitude
                     long = locationResult.lastLocation!!.longitude
                     Log.i("onResult", "onLocationResult: " + lat + " " + long)
-                    Toast.makeText(baseContext, "lat $lat", Toast.LENGTH_SHORT).show()
 
                     viewModel.putlat(lat)
                     viewModel.putLong(long)
