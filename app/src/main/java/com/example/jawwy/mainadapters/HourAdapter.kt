@@ -55,6 +55,7 @@ class HourAdapter(var dataList:MutableList<Hourly>, var symbol :String, var spee
         }
         val degree:Int = d.toInt()
         var wind = currentHour.windSpeed ?: 0.0
+        Log.i("Test", "onBindViewHolder: $wind")
         if (speedUnit== MILE){
             wind = UnitConverter.meterPerSecondToMilesPerHour(wind)
         }

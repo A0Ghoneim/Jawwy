@@ -63,9 +63,14 @@ class DailyAdapter(var dataList:MutableList<Daily>, var symbol :String): Recycle
         val mindegree:Int = mind.toInt()
         val icon = currentDaily.weather[0].icon
         val link = "https://openweathermap.org/img/wn/$icon@2x.png"
-        val dayname = getLocalDayFromUnixTimestamp(currentDaily.dt!!)
+        var dayname = getLocalDayFromUnixTimestamp(currentDaily.dt!!)
         val date = getDateFromUnixTimestamp(currentDaily.dt!!)
-        val state = currentDaily.weather[0].main
+        val state = currentDaily.weather[0].description
+        if (position==0){
+            dayname= context.getString(R.string.today)
+        } else if (position ==1){
+            dayname= context.getString(R.string.tomorrow)
+        }
 
         Log.i("DATE", "onDater: $date")
         holder.dayTV.text=dayname
@@ -90,6 +95,14 @@ class DailyAdapter(var dataList:MutableList<Daily>, var symbol :String): Recycle
             Instant.ofEpochSecond(unixTimestamp.toLong()),
             ZoneId.systemDefault()
         )
+        val currentTimeMillis = System.currentTimeMillis()
+
+        // Convert milliseconds to seconds
+        val currentUnixTimestamp = currentTimeMillis / 1000
+
+        if (unixTimestamp-currentUnixTimestamp>86400L){
+
+        }
 
         // Format LocalDateTime to get the local day
         val formatter = DateTimeFormatter.ofPattern("EEEE") // "EEEE" gives the full name of the day (e.g., "Monday")

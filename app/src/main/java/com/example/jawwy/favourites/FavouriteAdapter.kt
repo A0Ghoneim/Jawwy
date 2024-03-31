@@ -18,7 +18,7 @@ import com.example.jawwy.model.data.JsonPojo
 
 class FavouriteAdapter(private val viewModel: FavouriteViewModel,private val weatherViewModel: CurrentWeatherViewModel, private var dataList: MutableList<JsonPojo>) :
     RecyclerView.Adapter<FavouriteAdapter.MyViewHolder>() {
-lateinit var context : Context
+    lateinit var context : Context
 
 
 
@@ -38,7 +38,7 @@ lateinit var context : Context
             val  inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = inflater.inflate(R.layout.refresh_menu_item_action_layout, null);
 
-           val  start:CardView =view.findViewById(R.id.deleter)
+            val  start:CardView =view.findViewById(R.id.deleter)
 
             val  mypopupWindow =PopupWindow (view, 400, 210, true);
 
